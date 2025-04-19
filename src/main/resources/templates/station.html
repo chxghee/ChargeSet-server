@@ -1,0 +1,122 @@
+<!-- station.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+  <title>ChargeSet - 충전소별 현황</title>
+
+  <th:block id="page-css">
+    <link rel="stylesheet" th:href="@{/css/station.css}">
+  </th:block>
+</head>
+
+<body>
+<div id="page-content">
+
+  <div class="container-fluid">
+
+    <h1 class="page-title" th:text="${chargingStationInfo.name}"></h1>
+    <h4 style="color: dimgray" th:text="${chargingStationInfo.location.address}"></h4>
+
+    <hr/>
+
+    <!-- 오늘 통계 -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-md-6 col-12 mb-4">
+        <div class="card-box text-center">
+          <div class="section-title">ESS 충전량</div>
+          <div class="highlight" >1200 kWh</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-12 mb-4">
+        <div class="card-box text-center">
+          <div class="section-title">금일 사용자</div>
+            <div class="highlight" id="today-user-count"></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-12 mb-4">
+        <div class="card-box text-center">
+          <div class="section-title">사용 전력량</div>
+            <div class="highlight" id="today-energy">-</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-12 mb-4">
+        <div class="card-box text-center">
+          <div class="section-title">금일 매출</div>
+            <div class="highlight text-success" id="today-revenue">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 지도 + EVSE 현황 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 col-12 mb-4">
+        <div class="card-box">
+          <div class="section-title mb-3">시간별 이용 통계</div>
+
+          <!-- 날짜 선택 + 기준 선택 -->
+          <div class="d-flex mb-3 gap-2 align-items-center">
+            <input type="date" id="stat-date" class="form-control" style="max-width: 160px;">
+            <select id="stat-metric" class="form-select" style="max-width: 160px;">
+              <option value="count">충전 횟수</option>
+              <option value="totalEnergy">전력 사용량</option>
+              <option value="totalRevenue">매출</option>
+            </select>
+            <button class="btn btn-primary" onclick="fetchHourlyChartData()">검색</button>
+          </div>
+
+          <!-- 차트 -->
+          <canvas id="hourly-chart" height="200"></canvas>
+
+
+        </div>
+      </div>
+
+
+
+      <div class="col-lg-6 col-12 mb-4">
+        <div class="card-box h-100 d-flex flex-column justify-content-between" style="height: 400px;">
+          <div class="section-title text-start">전력 단가 비교</div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 예약 -->
+    <div class="card-box">
+      <div class="section-title">충전 기록</div>
+      <div id="transaction-container">
+
+      </div>
+
+    </div>
+
+
+    <!-- 예약 -->
+    <div class="card-box">
+      <div class="section-title">예약</div>
+      <div id="reservation-container">
+
+      </div>
+
+    </div>
+
+
+
+  </div>
+</div>
+
+<th:block id="page-script">
+
+
+  <!-- chargingStations JS 변수 전역 바인딩 -->
+  <script th:inline="javascript">
+    window.chargingStationInfo = [[${chargingStationInfo}]];
+  </script>
+
+  <!-- 분리된 JS 파일 로딩 -->
+  <script th:src="@{/js/station.js}"></script>
+</th:block>
+</body>
+</html>

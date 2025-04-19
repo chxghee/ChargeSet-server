@@ -1,0 +1,57 @@
+/* dashboard.css */
+
+.customoverlay-box {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-width: 220px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.customoverlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.overlay-close {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.pagination-button {
+    padding: 6px 12px;
+    margin: 0 4px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: white;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.pagination-button.active {
+    background-color: #007bff;
+    color: white;
+}
+.pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/*.pagination .page-item.active .page-link {*/
+/*    background-color: #4dabf7;*/
+/*    border-color: #4dabf7;*/
+/*    color: white;*/
+/*}*/
+
+/*.pagination .page-link {*/
+/*    color: #4dabf7;*/
+/*}*/

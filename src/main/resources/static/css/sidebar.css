@@ -1,0 +1,105 @@
+/* 📌 기본 사이드바 스타일 */
+.sidebar {
+    background-color: #1f2d3d;
+    color: white;
+    height: 100vh;
+    padding: 2rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    z-index: 1000;
+}
+
+.sidebar h2 {
+    color: #00e676;
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+
+/* 📌 메뉴 리스트 기본 스타일 */
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+/* 📌 기본 링크 스타일 */
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 0;
+    transition: 0.2s;
+}
+
+/* 📌 링크 hover / active 효과 */
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    color: #00e676;
+    font-weight: bold;
+}
+
+/* 📌 서브메뉴를 위한 span (비링크) 스타일 */
+.sidebar .has-submenu > span {
+    color: white;
+    display: block;
+    padding: 0.5rem 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* 📌 상위 span hover 또는 활성화 시 */
+.sidebar .has-submenu:hover > span,
+.sidebar .has-submenu.open > span,
+.sidebar .has-submenu > span.active {
+    color: #00e676;
+    font-weight: bold;
+}
+
+/* 🔽 아이콘 표시 */
+.sidebar .has-submenu > span::after {
+    content: ' ▾';
+    font-size: 0.8rem;
+    margin-left: 5px;
+    color: #aaa;
+}
+
+/* 📌 서브메뉴 숨김/표시 */
+.sidebar .submenu {
+    display: none;
+    list-style: none;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+.sidebar .has-submenu.open .submenu,
+.sidebar .has-submenu:hover .submenu {
+    display: block;
+}
+
+/* 📌 서브메뉴 항목 스타일 */
+.sidebar .submenu li {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+}
+
+.sidebar .submenu li a {
+    color: #ccc;
+    font-weight: normal;
+    transition: 0.2s;
+}
+
+.sidebar .submenu li a:hover,
+.sidebar .submenu li a.active {
+    color: #00e676;
+    font-weight: bold;
+}

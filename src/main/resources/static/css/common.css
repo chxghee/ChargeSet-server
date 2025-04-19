@@ -1,0 +1,47 @@
+.main-content {
+    padding-left: 220px; /* sidebar 넓이만큼 밀어줌 */
+    padding-top: 2rem;
+    padding-right: 2rem;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .main-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.card-box {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.highlight {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}

@@ -1,0 +1,133 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+    <title>ChargeSet - 대시보드</title>
+
+    <th:block id="page-css">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    </th:block>
+</head>
+
+<body>
+<div id="page-content">
+
+
+    <div class="container-fluid">
+
+
+        <h1 class="page-title">대시 보드</h1>
+        <hr>
+
+        <!-- 오늘 통계 -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">운영중인 충전소</div>
+                    <div class="highlight" th:text="${stationCount}">0개</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">금일 사용자</div>
+                    <div class="highlight" th:text="${todayChargingStats.count + '명'}">17명</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">사용 전력량</div>
+                    <div class="highlight" th:text="${todayChargingStats.totalEnergy + ' kWh'}">20000 kWh</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">금일 매출</div>
+                    <div class="highlight text-success" th:text="${todayChargingStats.totalRevenue + '원'}">277738원</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 지도 + EVSE 현황 -->
+        <div class="row mb-4">
+            <div class="col-lg-6 col-12 mb-4">
+                <div class="card-box">
+                    <div class="section-title">충전소 위치</div>
+                    <div id="map" style="height: 400px; background-color: #dcdcdc;">지도 API 영역</div>
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-12 mb-4">
+                <div class="card-box h-100 d-flex flex-column justify-content-between" style="height: 400px;">
+                    <div class="section-title text-start">전체 EVSE 현황</div>
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <div style="width: 100%; max-width: 400px;">
+                            <canvas id="evseStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">주간 수익</div>
+                    <canvas id="revenueChart" height="120"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">주간 전력 사용량</div>
+                    <canvas id="energyChart" height="120"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">주간 충전 횟수</div>
+                    <canvas id="countChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="section-title">금일 예약 현황</div>
+            <div id="reservation-container">
+                <table class="table table-bordered table-striped text-center align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>예약 번호</th>
+                        <th>충전소 ID</th>
+                        <th>EVSE ID</th>
+                        <th>시작 시간</th>
+                        <th>종료 시간</th>
+                        <th>목표 충전량(Wh)</th>
+                        <th>예약 상태</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reservation-table-body">
+                    <!-- 여기에 JS가 데이터로 채움 -->
+                    </tbody>
+                </table>
+            </div>
+            <nav id="pagination" class="mt-4 d-flex justify-content-center">
+                <ul class="pagination" id="pagination-list">
+                    <!-- 페이지 아이템이 여기에 동적으로 채워짐 -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<th:block id="page-script">
+
+    <!-- chargingStations JS 변수 바인딩 -->
+    <script th:inline="javascript">
+        window.chargingStations = /*[[${chargingStations}]]*/ [];
+    </script>
+
+    <!-- 분리된 JS 파일 로딩 -->
+    <script th:src="@{/js/dashboard.js}"></script>
+</th:block>
+</body>
+</html>
