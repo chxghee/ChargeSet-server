@@ -14,5 +14,5 @@ public class TransactionInfoResponse {
     private String userId;
     private int energyWh;
     private int cost;
-    private TransactionStatus status;
+    private TransactionStatus transactionStatus;
 }

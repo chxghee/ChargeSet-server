@@ -7,6 +7,7 @@
 
     <th:block id="page-css">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/pagination.css}">
     </th:block>
 </head>
 
@@ -127,7 +128,7 @@
     </script>
 
     <!-- 분리된 JS 파일 로딩 -->
-    <script th:src="@{/js/dashboard.js}"></script>
+    <script type="module" th:src="@{/js/dashboard.js}"></script>
 </th:block>
 </body>
 </html>

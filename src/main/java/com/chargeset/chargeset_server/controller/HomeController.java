@@ -44,4 +44,12 @@ public class HomeController {
 
         return "station";
     }
+
+    @GetMapping("/transactions")
+    public String transactions(Model model) {
+        model.addAttribute("activePage", "transaction");
+        return "transaction";
+    }
+
+
 }

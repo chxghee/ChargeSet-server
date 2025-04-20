@@ -45,7 +45,7 @@ public class TransactionApiController {
     public Page<TransactionInfoResponse> all(@PageableDefault(size = 10) Pageable pageable,
                                              @RequestParam(name = "from", required = false)
                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                             @RequestParam(name = "from", required = false)
+                                             @RequestParam(name = "to", required = false)
                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                              @RequestParam(name = "stationId", required = false) String StationId,
                                              @RequestParam(name = "status", required = false) TransactionStatus status) {
