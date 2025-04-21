@@ -39,7 +39,10 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
                 .lt(todayRangeInKST.getSecond());
         MatchOperation match = Aggregation.match(criteria);
 
-        SortOperation sort = Aggregation.sort(Sort.by("startTime").ascending());
+        SortOperation sort = Aggregation.sort(Sort.by(
+                Sort.Order.asc("startTime"),
+                Sort.Order.asc("_id")
+        ));
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
         LimitOperation limit = Aggregation.limit(pageable.getPageSize());
@@ -71,7 +74,10 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 
         MatchOperation match = Aggregation.match(criteria);
 
-        SortOperation sort = Aggregation.sort(Sort.by("startTime").ascending());
+        SortOperation sort = Aggregation.sort(Sort.by(
+                Sort.Order.desc("startTime"),
+                Sort.Order.asc("_id")  // Sort 안정성 - 페이징시 중복을 피하기 위해 키 필드 추가
+        ));
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
         LimitOperation limit = Aggregation.limit(pageable.getPageSize());
