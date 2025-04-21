@@ -1,0 +1,110 @@
+<!-- transaction.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+    <title>ChargeSet - 충전 현황</title>
+
+    <th:block id="page-css">
+        <link rel="stylesheet" th:href="@{/css/reservation.css}">
+        <link rel="stylesheet" th:href="@{/css/pagination.css}">
+    </th:block>
+</head>
+
+<body>
+<div id="page-content">
+
+    <div class="container-fluid">
+
+        <h1 class="page-title">예약 조회</h1>
+        <hr>
+
+
+        <!-- 전체 예약 조회  -->
+        <div class="card-box">
+            <div class="section-title">예약 조회</div>
+
+            <!-- 필터 라인: 충전소, 상태 -->
+            <div class="d-flex mb-3 gap-3 align-items-center flex-wrap">
+
+                <!-- 충전소 선택 -->
+                <div>
+                    <label for="station-select" class="form-label mb-1">충전소</label>
+                    <select id="station-select" class="form-select" style="min-width: 160px;">
+                        <option value="">전체</option>
+                        <option value="ST-001">세종대학교 충전소</option>
+                        <option value="ST-002">서울 시청 충전소</option>
+                    </select>
+                </div>
+
+                <!-- 상태 선택 -->
+                <div>
+                    <label for="status-select" class="form-label mb-1">충전 상태</label>
+                    <select id="status-select" class="form-select" style="min-width: 160px;">
+                        <option value="">전체</option>
+                        <option value="COMPLETED">충전 완료된 예약</option>
+                        <option value="WAITING">충전 대기 중</option>
+                        <option value="ONGOING">충전 중인 예약</option>
+                        <option value="EXPIRED">예약 만료(노쇼)</option>
+                        <option value="ACTIVE">예약 됨</option>
+                        <option value="CANCELED">취소된 예약</option>
+                    </select>
+                </div>
+
+                <!-- 날짜 선택 -->
+                <div>
+                    <label for="from-date" class="form-label mb-1">시작일</label>
+                    <input type="date" id="from-date" class="form-control" style="min-width: 160px;">
+                </div>
+                <div>
+                    <label for="to-date" class="form-label mb-1">종료일</label>
+                    <input type="date" id="to-date" class="form-control" style="min-width: 160px;">
+                </div>
+
+
+                <!-- 검색 버튼 -->
+                <div class="align-self-end">
+                    <button class="btn btn-primary" id="search-button">검색</button>
+                </div>
+            </div>
+
+            <div id="reservation-container">
+                <table class="table table-bordered table-striped text-center align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>예약 번호</th>
+                        <th>충전소 ID</th>
+                        <th>EVSE ID</th>
+                        <th>유저 시스템 ID</th>
+                        <th>시작 시간</th>
+                        <th>종료 시간</th>
+                        <th>목표 충전량(Wh)</th>
+                        <th>예약 일자</th>
+                        <th>예약 상태</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reservation-table-body">
+                    <!-- 여기에 JS가 데이터로 채움 -->
+                    </tbody>
+                </table>
+            </div>
+            <nav id="pagination" class="mt-4 d-flex justify-content-center">
+                <ul class="pagination" id="pagination-list">
+                    <!-- 페이지 아이템이 여기에 동적으로 채워짐 -->
+                </ul>
+            </nav>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<th:block id="page-script">
+
+    <!-- 분리된 JS 파일 로딩 -->
+    <script type="module" th:src="@{/js/reservation.js}"></script>
+</th:block>
+</body>
+</html>

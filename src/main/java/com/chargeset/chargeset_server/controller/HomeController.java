@@ -51,5 +51,11 @@ public class HomeController {
         return "transaction";
     }
 
+    @GetMapping("/reservations")
+    public String reservations(Model model) {
+        model.addAttribute("activePage", "reservation");
+        return "reservation";
+    }
+
 
 }
