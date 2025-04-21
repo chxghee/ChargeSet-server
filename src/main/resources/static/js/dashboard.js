@@ -1,7 +1,5 @@
 // dashboard.js
 
-import { renderPagination } from '/js/pagination.js';
-
 // 주간 통계 API 데이터로 차트 생성
 async function fetchWeeklyStats() {
     const res = await fetch('/api/transactions/weekly-revenue');

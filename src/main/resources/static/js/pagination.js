@@ -1,6 +1,6 @@
 // pagination.js
 
-export function renderPagination(pageData, currentPage, onClick) {
+function renderPagination(pageData, currentPage, onClick) {
     const paginationEl = document.getElementById("pagination-list");
     paginationEl.innerHTML = '';
 
@@ -37,3 +37,7 @@ export function renderPagination(pageData, currentPage, onClick) {
     createButton('›', currentPage + 1, currentPage >= totalPages - 1);
     createButton('»', totalPages - 1, currentPage >= totalPages - 1);
 }
+
+
+// 전역 등록
+window.renderPagination = renderPagination;

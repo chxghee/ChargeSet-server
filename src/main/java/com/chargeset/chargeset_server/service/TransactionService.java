@@ -76,7 +76,16 @@ public class TransactionService {
         return transactionRepository.findTransactionWithFilter(from, to, stationId, status, pageable);
     }
 
+    /**
+     * 6. 트랜젝션의 충전 프로파일 조회
+     */
+    public ChargingProfileResponse getChargingProfile(String transactionId) {
+        return transactionRepository.findChargingProfileById(transactionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 트랜젝션이 존재하지 않습니다." + transactionId));
+    }
 
+
+    //== 메서드 ==//
     private static WeeklyStatResponse buildWeeklyStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last7Days) {
         Map<LocalDate, ChargingDailyStat> statMap = actualResults.stream()
                 .collect(Collectors.toMap(ChargingDailyStat::getDate, stat -> stat));
@@ -93,7 +102,6 @@ public class TransactionService {
         }
         return new WeeklyStatResponse(totalCount, totalRevenue, totalEnergy, fullWeekData);
     }
-
 
     private static HourlyStatResponse buildHourlyStatResponse(String stationId, LocalDate searchingDate, List<ChargingHourlyStat> actualResults) {
 

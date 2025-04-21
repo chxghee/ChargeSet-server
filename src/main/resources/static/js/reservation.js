@@ -1,5 +1,4 @@
 // reservation.js
-import { renderPagination } from '/js/pagination.js';
 
 const pageSize = 10;
 

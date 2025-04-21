@@ -55,6 +55,12 @@ public class TransactionApiController {
         return transactionService.getChargingStats(from, to, StationId, status, pageable);
     }
 
-
+    /**
+     * 4. 충전 프로파일 조회
+     */
+    @GetMapping("/{transactionId}/charging-profile")
+    public ResponseEntity<ChargingProfileResponse> getChargingProfile(@PathVariable(name = "transactionId") String transactionId) {
+        return ResponseEntity.ok(transactionService.getChargingProfile(transactionId));
+    }
 
 }

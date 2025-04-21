@@ -1,6 +1,7 @@
 // transaction.js
 
-import { renderPagination } from '/js/pagination.js';
+
+
 
 const pageSize = 10;
 
@@ -48,7 +49,7 @@ function renderTransactionData(transactions) {
     transactions.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${item.id || '-'}</td>
+            <td><a href="#" class="transaction-link" data-id="${item.id}">${item.id}</a></td>
             <td>${item.stationId || '-'}</td>
             <td>${item.evseId || '-'}</td>
             <td>${item.userId || '-'}</td>
@@ -60,6 +61,15 @@ function renderTransactionData(transactions) {
         `;
         tbody.appendChild(row);
     });
+
+    // 충전 ID 클릭 이벤트
+    document.querySelectorAll('.transaction-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const transactionId = e.target.dataset.id;
+            openProfileModal(transactionId);
+        });
+    })
 }
 
 function formatTransactionStatus(status) {
@@ -72,7 +82,172 @@ function formatTransactionStatus(status) {
     }
 }
 
-// 초기화
+let profileChart = null;
+
+async function openProfileModal(transactionId) {
+    try {
+        const res = await fetch(`/api/transactions/${transactionId}/charging-profile`);
+        const data = await res.json();
+
+        const baseTime = new Date(data.startSchedule);
+        const snapshots = data.chargingProfileSnapshots;
+
+        setProfileInfo(data); // 💡 1. 상단 정보 렌더링
+        const { labels, values, backgroundColors, essAnnotations } = buildChartData(snapshots, baseTime);
+        const options = buildChartOptions(data, baseTime, snapshots, essAnnotations); // 💡 3. 옵션 분리
+
+        const modalEl = document.getElementById('profileModal');
+        const modal = new bootstrap.Modal(modalEl);
+
+        modalEl.addEventListener('shown.bs.modal', () => {
+            const ctx = document.getElementById('profileChart').getContext('2d');
+            if (profileChart) profileChart.destroy();
+
+            profileChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: '전력 제한 (Wh)',
+                        data: values,
+                        stepped: true,
+                        fill: false,
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        backgroundColor: backgroundColors,
+                        pointRadius: 3,
+                        tension: 0
+                    }]
+                },
+                options
+            });
+        }, { once: true });
+
+        modal.show();
+    } catch (err) {
+        alert("충전 프로파일을 불러오는 중 오류 발생");
+        console.error(err);
+    }
+}
+
+
+function setProfileInfo(data) {
+    document.getElementById("profile-id").textContent = data.transactionId;
+    document.getElementById("profile-energy").textContent = data.energyWh?.toLocaleString();
+    document.getElementById("profile-cost").textContent = data.cost?.toLocaleString();
+    document.getElementById("profile-start-time").textContent = data.startTime;
+    document.getElementById("profile-end-time").textContent = data.endTime;
+    document.getElementById("profile-base-time").textContent = data.startSchedule;
+}
+
+
+function buildChartData(snapshots, baseTime) {
+    const labels = [], values = [], backgroundColors = [], essAnnotations = {};
+
+    for (let i = 0; i < snapshots.length; i++) {
+        const s = snapshots[i];
+        const currTime = new Date(baseTime.getTime() + s.startPeriod * 1000);
+        const next = snapshots[i + 1];
+        const nextTime = next
+            ? new Date(baseTime.getTime() + next.startPeriod * 1000)
+            : new Date(currTime.getTime() + 15 * 60 * 1000);
+
+        labels.push(currTime.toISOString());
+        values.push(s.limit);
+        backgroundColors.push(s.useESS ? 'rgba(0, 230, 118, 0.6)' : 'rgba(33, 150, 243, 0.6)');
+
+        if (s.useESS) {
+            essAnnotations[`essBox${i}`] = {
+                type: 'box',
+                xMin: currTime.toISOString(),
+                xMax: nextTime.toISOString(),
+                backgroundColor: 'rgba(0, 230, 118, 0.12)',
+                borderWidth: 0
+            };
+        }
+    }
+
+    return { labels, values, backgroundColors, essAnnotations };
+}
+
+function buildChartOptions(data, baseTime, snapshots, essAnnotations) {
+    const startTime = new Date(data.startTime).toISOString();
+    const endTime = new Date(data.endTime).toISOString();
+    const base = baseTime.toISOString();
+
+    return {
+        responsive: true,
+        plugins: {
+            annotation: {
+                annotations: {
+                    ...essAnnotations,
+                    start: {
+                        type: 'line',
+                        xMin: startTime,
+                        xMax: startTime,
+                        borderColor: 'green',
+                        borderDash: [6, 6],
+                        label: {
+                            enabled: true,
+                            content: '실제 충전 시작',
+                            position: 'start'
+                        }
+                    },
+                    end: {
+                        type: 'line',
+                        xMin: endTime,
+                        xMax: endTime,
+                        borderColor: 'red',
+                        borderDash: [6, 6],
+                        label: {
+                            enabled: true,
+                            content: '실제 충전 종료',
+                            position: 'end'
+                        }
+                    },
+                    base: {
+                        type: 'line',
+                        xMin: base,
+                        xMax: base,
+                        borderColor: 'blue',
+                        borderDash: [4, 4],
+                        label: {
+                            enabled: true,
+                            content: '충전 스케줄',
+                            position: 'center'
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: ctx => {
+                        const essUsed = snapshots[ctx.dataIndex].useESS;
+                        return `제한: ${ctx.raw}Wh (${essUsed ? 'ESS 사용' : 'ESS 미사용'})`;
+                    }
+                }
+            },
+            legend: { display: false }
+        },
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    tooltipFormat: 'HH:mm',
+                    displayFormats: {
+                        minute: 'HH:mm',
+                        hour: 'HH:mm'
+                    }
+                },
+                title: { display: true, text: '시간' }
+            },
+            y: {
+                beginAtZero: true,
+                title: { display: true, text: '전력 제한 (Wh)' }
+            }
+        }
+    };
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     fetchTransactionData(0);
 

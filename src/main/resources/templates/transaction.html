@@ -88,21 +88,68 @@
       </div>
       <nav id="pagination" class="mt-4 d-flex justify-content-center">
         <ul class="pagination" id="pagination-list">
-          <!-- 페이지 아이템이 여기에 동적으로 채워짐 -->
+          <!-- 페이징 버튼이 여기에 동적으로 채워짐 -->
         </ul>
       </nav>
     </div>
 
 
 
-
   </div>
+
+  <!-- 충전 프로파일 모달 -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">충전 프로파일 그래프</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- 트랜젝션 기본 정보 -->
+          <div id="profile-info" class="mb-3">
+            <div class="card mb-2">
+              <div class="card-body p-3">
+                <h6 class="card-title mb-3 fw-bold">충전 상세 정보</h6>
+                <ul class="list-group list-group-flush" id="profile-info-list">
+                  <li class="list-group-item"><strong>트랜잭션 ID:</strong> <span id="profile-id"></span></li>
+                  <li class="list-group-item"><strong>총 전력량:</strong> <span id="profile-energy"></span> Wh</li>
+                  <li class="list-group-item"><strong>총 비용:</strong> <span id="profile-cost"></span> 원</li>
+                  <li class="list-group-item"><strong>실제 충전 시작 시간:</strong> <span id="profile-start-time"></span></li>
+                  <li class="list-group-item"><strong>실제 충전 종료 시간:</strong> <span id="profile-end-time"></span></li>
+                  <li class="list-group-item"><strong>충전 스케줄 시작 기준시:</strong> <span id="profile-base-time"></span></li>
+                </ul>
+                <div class="mt-3 text-success" style="font-size: 0.9rem;">
+                  <span style="display:inline-block; width:12px; height:12px; background-color:rgba(0,230,118,0.6); margin-right:6px; border-radius:2px;"></span>
+                  초록색 박스는 <strong>ESS 사용 시간</strong>을 의미합니다.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 차트 -->
+          <canvas id="profileChart" height="300"></canvas>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
 </div>
+
 
 <th:block id="page-script">
 
+
   <!-- 분리된 JS 파일 로딩 -->
-  <script type="module" th:src="@{/js/transaction.js}"></script>
+  <script th:src="@{/js/pagination.js}"></script>
+  <script th:src="@{/js/transaction.js}"></script>
 </th:block>
 </body>
 </html>

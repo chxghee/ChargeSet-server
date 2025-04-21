@@ -4,6 +4,7 @@ import com.chargeset.chargeset_server.document.Transaction;
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
 import com.chargeset.chargeset_server.dto.tansaction.ChargingDailyStat;
 import com.chargeset.chargeset_server.dto.tansaction.ChargingHourlyStat;
+import com.chargeset.chargeset_server.dto.tansaction.ChargingProfileResponse;
 import com.chargeset.chargeset_server.dto.tansaction.TransactionInfoResponse;
 import com.chargeset.chargeset_server.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -155,11 +156,17 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
      */
     @Override
     public Page<TransactionInfoResponse> findTransactionWithFilter(LocalDate from, LocalDate to, String stationId, TransactionStatus transactionStatus, Pageable pageable) {
+
+        System.out.println("#####");
+
         Criteria criteria = getSearchingConditionCriteria(from, to, stationId, transactionStatus);
 
         MatchOperation match = Aggregation.match(criteria);
 
-        SortOperation sort = Aggregation.sort(Sort.by("endTime").descending());
+        SortOperation sort = Aggregation.sort(Sort.by(
+                Sort.Order.desc("endTime"),
+                Sort.Order.asc("_id")  // ✅ 유일한 필드 추가
+        ));
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
         LimitOperation limit = Aggregation.limit(pageable.getPageSize());
@@ -180,6 +187,27 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
         return new PageImpl<>(transaction, pageable, total);
     }
 
+    /**
+     * 6. 충전 프로파일 조회
+     */
+    @Override
+    public Optional<ChargingProfileResponse> findChargingProfileById(String id) {
+
+        Criteria criteria = Criteria.where("_id").is(id);
+        Query query = new Query(criteria);
+        query.fields()
+                .include("energyWh")
+                .include("cost")
+                .include("startTime")
+                .include("endTime")
+                .include("startSchedule")
+                .include("chargingProfileSnapshots");
+
+        Transaction tx = mongoTemplate.findOne(query, Transaction.class);
+
+        return Optional.ofNullable(tx)
+                .map(ChargingProfileResponse::new);
+    }
 
     //== 메서드 ==//
     private static MatchOperation getTimeRangeMatchOperation(Pair<Instant, Instant> timeRangeInKST) {

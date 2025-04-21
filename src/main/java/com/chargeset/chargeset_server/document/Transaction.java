@@ -1,6 +1,7 @@
 package com.chargeset.chargeset_server.document;
 
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +9,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Document(collection = "transaction")
+@Getter
 public class Transaction {
 
     @Id
@@ -32,5 +34,7 @@ public class Transaction {
 
     private TransactionStatus status;
 
-    private List<ChargingProfile> chargingProfiles;
+    // 충전 프로파일 관련 스냅샷
+    private Instant startSchedule;
+    private List<ChargingSchedulePeriod> chargingProfileSnapshots;
 }
