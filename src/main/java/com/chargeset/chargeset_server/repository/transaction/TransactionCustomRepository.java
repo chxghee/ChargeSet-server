@@ -26,4 +26,6 @@ public interface TransactionCustomRepository {
                                                             TransactionStatus status, Pageable pageable);
 
     Optional<ChargingProfileResponse> findChargingProfileById(String id);
+
+    List<ChargingDailyStat> getMonthlyChargingStatsByStationId(String stationId);
 }

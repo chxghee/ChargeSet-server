@@ -2,6 +2,7 @@ package com.chargeset.chargeset_server.service;
 
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
 import com.chargeset.chargeset_server.dto.tansaction.*;
+import com.chargeset.chargeset_server.repository.charging_station.ChargingStationRepository;
 import com.chargeset.chargeset_server.repository.transaction.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.stream.IntStream;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final ChargingStationRepository chargingStationRepository;
 
     /**
      * 1. 전체 금일 매출, 전력, 사용횟수 조회
@@ -48,14 +50,11 @@ public class TransactionService {
 
         List<ChargingDailyStat> actualResults = transactionRepository.getWeeklyChargingStats();
 
-        // 매출이 없는 경우 채워주는 로직
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        List<LocalDate> last7Days = IntStream.rangeClosed(0, 6)
-                .mapToObj(today::minusDays)
-                .sorted().toList();
+        List<LocalDate> last7Days = getLastDaysList(6);
 
         return buildWeeklyStatResponse(actualResults, last7Days);
     }
+
 
     /**
      * 4. 시간대별 매출, 전력, 사용횟수 조회
@@ -84,8 +83,36 @@ public class TransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 트랜젝션이 존재하지 않습니다." + transactionId));
     }
 
+    /**
+     * 7. 최근 한달 매출, 전력, 사용횟수 조회
+     * @param stationId: 비교할 충전소 1
+     */
+    public ChargingStatResponse getMonthlyChargingStats(String stationId) {
+
+        List<ChargingDailyStat> actualResults = transactionRepository.getMonthlyChargingStatsByStationId(stationId);
+        List<LocalDate> last30Days = getLastDaysList(29);
+        return buildMonthlyStatResponse(actualResults, last30Days);
+    }
+
 
     //== 메서드 ==//
+    private static ChargingStatResponse buildMonthlyStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last30Days) {
+        Map<LocalDate, ChargingDailyStat> statMap = actualResults.stream()
+                .collect(Collectors.toMap(ChargingDailyStat::getDate, stat -> stat));
+
+        List<ChargingDailyStat> fullMonthData = new ArrayList<>();
+        long totalCount = 0, totalRevenue = 0, totalEnergy = 0;
+
+        for (LocalDate date : last30Days) {
+            ChargingDailyStat stat = statMap.getOrDefault(date, new ChargingDailyStat(date, 0, 0, 0));
+            totalCount += stat.getCount();
+            totalRevenue += stat.getTotalRevenue();
+            totalEnergy += stat.getTotalEnergy();
+            fullMonthData.add(stat);
+        }
+        return new ChargingStatResponse(totalCount, totalRevenue, totalEnergy, fullMonthData);
+    }
+
     private static WeeklyStatResponse buildWeeklyStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last7Days) {
         Map<LocalDate, ChargingDailyStat> statMap = actualResults.stream()
                 .collect(Collectors.toMap(ChargingDailyStat::getDate, stat -> stat));
@@ -123,5 +150,13 @@ public class TransactionService {
             fullHourData.add(stat);
         }
         return new HourlyStatResponse(searchingDate, stationId, totalCount, totalRevenue, totalEnergy, fullHourData);
+    }
+
+    private static List<LocalDate> getLastDaysList(int endInclusive) {
+        // 매출이 없는 경우 채워주는 로직
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        return IntStream.rangeClosed(0, endInclusive)
+                .mapToObj(today::minusDays)
+                .sorted().toList();
     }
 }

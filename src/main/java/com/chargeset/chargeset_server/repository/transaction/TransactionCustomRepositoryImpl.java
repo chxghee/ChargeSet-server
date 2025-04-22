@@ -209,6 +209,41 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
                 .map(ChargingProfileResponse::new);
     }
 
+
+    /**
+     * 7. 최근 한달 충전 조회
+     */
+    @Override
+    public List<ChargingDailyStat> getMonthlyChargingStatsByStationId(String stationId) {
+
+        Pair<Instant, Instant> monthlyRangeInKST = TimeUtils.getMonthlyRangeInKST();
+
+        MatchOperation match = getStationAndTimeRangeMatchOperation(monthlyRangeInKST, stationId);
+
+        AggregationOperation projectToLocalDate = getAggregationDateFormatingOperation();
+
+        GroupOperation groupOperation = Aggregation.group("date")
+                .sum("cost").as("totalRevenue")
+                .sum("energyWh").as("totalEnergy")
+                .count().as("count");
+
+        ProjectionOperation finalProject = Aggregation.project()
+                .and("_id").as("date")
+                .andInclude("totalRevenue", "totalEnergy", "count");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                projectToLocalDate,
+                groupOperation,
+                finalProject,
+                Aggregation.sort(Sort.by("date").ascending())
+        );
+
+        return mongoTemplate.aggregate(aggregation, "transaction", ChargingDailyStat.class)
+                .getMappedResults();
+    }
+
+
     //== 메서드 ==//
     private static MatchOperation getTimeRangeMatchOperation(Pair<Instant, Instant> timeRangeInKST) {
         Criteria criteria = Criteria.where("endTime")
