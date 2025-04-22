@@ -34,7 +34,7 @@ public class TransactionApiController {
      * 2. 주간 운영 그래프 - 대시보드
      */
     @GetMapping("/weekly-revenue")
-    public ResponseEntity<WeeklyStatResponse> getWeeklyRevenueStat() {
+    public ResponseEntity<ChargingStatResponse> getWeeklyRevenueStat() {
         return ResponseEntity.ok(transactionService.getWeeklyChargingStats());
     }
 

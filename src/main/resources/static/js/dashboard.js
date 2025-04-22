@@ -4,7 +4,7 @@
 async function fetchWeeklyStats() {
     const res = await fetch('/api/transactions/weekly-revenue');
     const result = await res.json();
-    const data = result.data; // ✅ 일별 데이터만 추출
+    const data = result.dailyStats; // 일별 데이터만 추출
 
     const labels = data.map(d =>
         new Date(d.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
@@ -42,7 +42,7 @@ async function fetchWeeklyStats() {
         data: {
             labels: labels,
             datasets: [{
-                label: '전력량 (kWh)',
+                label: '전력량 (Wh)',
                 data: energy,
                 borderColor: '#4dabf7',
                 backgroundColor: 'transparent',

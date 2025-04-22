@@ -46,13 +46,13 @@ public class TransactionService {
     /**
      * 3. 주간 매출, 전력, 사용횟수 조회
      */
-    public WeeklyStatResponse getWeeklyChargingStats() {
+    public ChargingStatResponse getWeeklyChargingStats() {
 
         List<ChargingDailyStat> actualResults = transactionRepository.getWeeklyChargingStats();
 
         List<LocalDate> last7Days = getLastDaysList(6);
 
-        return buildWeeklyStatResponse(actualResults, last7Days);
+        return buildChargingStatResponse(actualResults, last7Days);
     }
 
 
@@ -91,12 +91,12 @@ public class TransactionService {
 
         List<ChargingDailyStat> actualResults = transactionRepository.getMonthlyChargingStatsByStationId(stationId);
         List<LocalDate> last30Days = getLastDaysList(29);
-        return buildMonthlyStatResponse(actualResults, last30Days);
+        return buildChargingStatResponse(actualResults, last30Days);
     }
 
 
     //== 메서드 ==//
-    private static ChargingStatResponse buildMonthlyStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last30Days) {
+    private static ChargingStatResponse buildChargingStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last30Days) {
         Map<LocalDate, ChargingDailyStat> statMap = actualResults.stream()
                 .collect(Collectors.toMap(ChargingDailyStat::getDate, stat -> stat));
 
@@ -111,23 +111,6 @@ public class TransactionService {
             fullMonthData.add(stat);
         }
         return new ChargingStatResponse(totalCount, totalRevenue, totalEnergy, fullMonthData);
-    }
-
-    private static WeeklyStatResponse buildWeeklyStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last7Days) {
-        Map<LocalDate, ChargingDailyStat> statMap = actualResults.stream()
-                .collect(Collectors.toMap(ChargingDailyStat::getDate, stat -> stat));
-
-        List<ChargingDailyStat> fullWeekData = new ArrayList<>();
-        long totalCount = 0, totalRevenue = 0, totalEnergy = 0;
-
-        for (LocalDate date : last7Days) {
-            ChargingDailyStat stat = statMap.getOrDefault(date, new ChargingDailyStat(date, 0, 0, 0));
-            totalCount += stat.getCount();
-            totalRevenue += stat.getTotalRevenue();
-            totalEnergy += stat.getTotalEnergy();
-            fullWeekData.add(stat);
-        }
-        return new WeeklyStatResponse(totalCount, totalRevenue, totalEnergy, fullWeekData);
     }
 
     private static HourlyStatResponse buildHourlyStatResponse(String stationId, LocalDate searchingDate, List<ChargingHourlyStat> actualResults) {
