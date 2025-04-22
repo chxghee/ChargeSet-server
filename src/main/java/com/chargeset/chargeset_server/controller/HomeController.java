@@ -47,6 +47,8 @@ public class HomeController {
 
     @GetMapping("/transactions")
     public String transactions(Model model) {
+        List<ChargingStationInfo> chargingStationsLocation = chargingStationService.getChargingStationsInfo();
+        model.addAttribute("chargingStations", chargingStationsLocation);
         model.addAttribute("activePage", "transaction");
         return "transaction";
     }

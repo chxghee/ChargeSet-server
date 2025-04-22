@@ -63,11 +63,4 @@ public class TransactionApiController {
         return ResponseEntity.ok(transactionService.getChargingProfile(transactionId));
     }
 
-    /**
-     * 5. 최근 한달 충전소 주간 운영 그래프 - 충전 이력
-     */
-    @GetMapping("/{stationId}/monthly-revenue")
-    public ResponseEntity<ChargingStatResponse> getMonthlyRevenueStat(@PathVariable(name = "stationId") String stationId) {
-        return ResponseEntity.ok(transactionService.getMonthlyChargingStats(stationId));
-    }
 }

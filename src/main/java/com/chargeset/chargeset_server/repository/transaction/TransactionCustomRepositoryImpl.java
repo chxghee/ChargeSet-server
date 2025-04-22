@@ -157,15 +157,13 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
     @Override
     public Page<TransactionInfoResponse> findTransactionWithFilter(LocalDate from, LocalDate to, String stationId, TransactionStatus transactionStatus, Pageable pageable) {
 
-        System.out.println("#####");
-
         Criteria criteria = getSearchingConditionCriteria(from, to, stationId, transactionStatus);
 
         MatchOperation match = Aggregation.match(criteria);
 
         SortOperation sort = Aggregation.sort(Sort.by(
                 Sort.Order.desc("endTime"),
-                Sort.Order.asc("_id")  // ✅ 유일한 필드 추가
+                Sort.Order.asc("_id")
         ));
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
