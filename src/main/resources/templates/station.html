@@ -67,18 +67,29 @@
           <!-- 차트 -->
           <canvas id="hourly-chart" height="200"></canvas>
 
-
         </div>
       </div>
-
 
 
       <div class="col-lg-6 col-12 mb-4">
-        <div class="card-box h-100 d-flex flex-column justify-content-between" style="height: 400px;">
+        <div class="card-box h-100 d-flex flex-column justify-content-between" style="min-height: 360px;">
           <div class="section-title text-start">사용자 재방문률</div>
 
+          <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+            <div style="width: 100%; max-width: 500px; aspect-ratio: 1 / 1; position: relative;">
+              <canvas id="user-usage-summary"></canvas>
+
+              <div id="user-usage-center-label"
+                   style="position: absolute; top: 46%; left: 50%; transform: translate(-50%, -50%);
+                    text-align: center; font-weight: bold; font-size: 25px;"></div>
+            </div>
+            <br>
+
+            <div class="text-muted mt-2" id="user-usage-total-text" style="font-size: 18px;"></div>
+          </div>
         </div>
       </div>
+
     </div>
 
 

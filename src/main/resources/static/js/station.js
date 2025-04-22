@@ -67,10 +67,68 @@ async function fetchHourlyChartData() {
     });
 }
 
+async function fetchUsageChartData() {
+    const stationId = window.chargingStationInfo.stationId;
+    const res = await fetch(`/api/stations/${stationId}/user-usage-summary`);
+    const data = await res.json();
+
+    const labels = ['1회 이용', '2회 이용', '3~4회 이용', '5회 이상 이용'];
+    const values = [data.once, data.twice, data.thirdAndFourth, data.fifthOrMore];
+    const colors = ['#4caf50', '#2196f3', '#ff9800', '#f44336'];
+
+    const total = values.reduce((acc, val) => acc + val, 0);
+
+    // 중앙 라벨 텍스트 삽입
+    const centerLabel = document.getElementById("user-usage-center-label");
+    centerLabel.innerHTML = `
+    <div>${total}명</div>
+    <div style="font-size: 12px; font-weight: normal;">전체 이용자</div>
+  `;
+
+    // 차트 아래 텍스트 표시
+    document.getElementById("user-usage-total-text").textContent =
+        `재방문률: ${(100 - (data.once / total * 100 || 0)).toFixed(1)}% (2회 이상)`;
+
+    new Chart(document.getElementById('user-usage-summary'), {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const val = context.raw;
+                            const percentage = total ? ((val / total) * 100).toFixed(1) : 0;
+                            return `${context.label}: ${val}명 (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
 
 // 초기화
 window.addEventListener('DOMContentLoaded', () => {
     fetchStationTodayRevenue();
     document.getElementById("stat-date").valueAsDate = new Date();
     fetchHourlyChartData();
+    fetchUsageChartData();
 });
