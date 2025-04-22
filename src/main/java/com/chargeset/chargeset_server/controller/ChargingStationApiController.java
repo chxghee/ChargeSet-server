@@ -3,6 +3,7 @@ package com.chargeset.chargeset_server.controller;
 import com.chargeset.chargeset_server.dto.charging_station.ChargingStationInfo;
 import com.chargeset.chargeset_server.dto.tansaction.ChargingDailyStat;
 import com.chargeset.chargeset_server.dto.tansaction.ChargingStatResponse;
+import com.chargeset.chargeset_server.dto.tansaction.ChargingUsageResponse;
 import com.chargeset.chargeset_server.dto.tansaction.HourlyStatResponse;
 import com.chargeset.chargeset_server.service.ChargingStationService;
 import com.chargeset.chargeset_server.service.TransactionService;
@@ -69,4 +70,13 @@ public class ChargingStationApiController {
     public ResponseEntity<ChargingStatResponse> getMonthlyRevenueStat(@PathVariable(name = "stationId") String stationId) {
         return ResponseEntity.ok(transactionService.getMonthlyChargingStats(stationId));
     }
+
+    /**
+     * 6. 충전소별 사용자 이용률 통계 - 충전소별 현황
+     */
+    @GetMapping("/{stationId}/user-usage-summary")
+    public ResponseEntity<ChargingUsageResponse> getUserUsageSummary(@PathVariable(name = "stationId") String stationId) {
+        return ResponseEntity.ok(transactionService.getChargingUsageSummary(stationId));
+    }
+
 }

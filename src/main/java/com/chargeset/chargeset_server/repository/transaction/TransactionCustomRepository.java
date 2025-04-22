@@ -1,10 +1,7 @@
 package com.chargeset.chargeset_server.repository.transaction;
 
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingDailyStat;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingHourlyStat;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingProfileResponse;
-import com.chargeset.chargeset_server.dto.tansaction.TransactionInfoResponse;
+import com.chargeset.chargeset_server.dto.tansaction.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +25,6 @@ public interface TransactionCustomRepository {
     Optional<ChargingProfileResponse> findChargingProfileById(String id);
 
     List<ChargingDailyStat> getMonthlyChargingStatsByStationId(String stationId);
+
+    List<UsageBucketResult> getUserChargingUsageSummaryByStationId(String stationId);
 }

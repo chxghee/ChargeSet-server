@@ -94,6 +94,30 @@ public class TransactionService {
         return buildChargingStatResponse(actualResults, last30Days);
     }
 
+    /**
+     * 8. 충전소별 사용자 이용 통계
+     */
+    public ChargingUsageResponse getChargingUsageSummary(String transactionId) {
+        List<UsageBucketResult> results = transactionRepository.getUserChargingUsageSummaryByStationId(transactionId);
+
+        long once = 0;
+        long twice = 0;
+        long thirdAndFourth = 0;
+        long fifthOrMore = 0;
+
+        for (UsageBucketResult result : results) {
+            switch (result.getId()) {
+                case "1" -> once += result.getUserCount();
+                case "2" -> twice += result.getUserCount();
+                case "3" -> thirdAndFourth += result.getUserCount();
+                case "4" -> thirdAndFourth += result.getUserCount();
+                default -> fifthOrMore += result.getUserCount();
+            }
+        }
+
+        return new ChargingUsageResponse(once, twice, thirdAndFourth, fifthOrMore);
+    }
+
 
     //== 메서드 ==//
     private static ChargingStatResponse buildChargingStatResponse(List<ChargingDailyStat> actualResults, List<LocalDate> last30Days) {
