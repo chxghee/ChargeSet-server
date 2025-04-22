@@ -248,10 +248,110 @@ function buildChartOptions(data, baseTime, snapshots, essAnnotations) {
     };
 }
 
+
+
+
+
+
+
+
+
+
+let monthlyChart = null;
+
+async function fetchMonthlyChartData() {
+    const firstStationId = window.chargingStations[0].stationId;
+    const secondStationId = window.chargingStations[1].stationId;
+    const metric = document.getElementById("stat-metric").value;
+
+    const url1 = `/api/stations/${firstStationId}/monthly-revenue`;
+    const url2 = `/api/stations/${secondStationId}/monthly-revenue`;
+
+    const [firstRes, secondRes] = await Promise.all([fetch(url1), fetch(url2)]);
+    const [firstData, secondData] = await Promise.all([firstRes.json(), secondRes.json()]);
+
+
+    // 요약 정보 세팅
+    document.getElementById("summary-first-title").textContent = firstStationId;
+    document.getElementById("summary-first-revenue").textContent = firstData.totalRevenue.toLocaleString();
+    document.getElementById("summary-first-energy").textContent = firstData.totalEnergy.toLocaleString();
+    document.getElementById("summary-first-count").textContent = firstData.totalCount.toLocaleString();
+
+    document.getElementById("summary-second-title").textContent = secondStationId;
+    document.getElementById("summary-second-revenue").textContent = secondData.totalRevenue.toLocaleString();
+    document.getElementById("summary-second-energy").textContent = secondData.totalEnergy.toLocaleString();
+    document.getElementById("summary-second-count").textContent = secondData.totalCount.toLocaleString();
+
+    const labels = firstData.dailyStats.map(d => d.date);
+    const firstValues = firstData.dailyStats.map(d => d[metric]);
+    const secondValues = secondData.dailyStats.map(d => d[metric]);
+
+    const ctx = document.getElementById("monthlyChartCanvas").getContext("2d");
+    if (monthlyChart) monthlyChart.destroy();
+
+    monthlyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: `${firstStationId}`,
+                    data: firstValues,
+                    borderColor: 'rgba(33, 150, 243, 1)',
+                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                    fill: true,
+                    tension: 0.2
+                },
+                {
+                    label: `${secondStationId}`,
+                    data: secondValues,
+                    borderColor: 'rgba(76, 175, 80, 1)',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    fill: true,
+                    tension: 0.2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}`
+                    }
+                },
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxTicksLimit: 10
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: metric === 'totalRevenue' ? '원' :
+                            metric === 'totalEnergy' ? 'Wh' : '횟수'
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+
+
 window.addEventListener('DOMContentLoaded', () => {
     fetchTransactionData(0);
-
-    // 검색 버튼 클릭 이벤트 등록
-    document.querySelector("#search-button")
-        .addEventListener("click", () => fetchTransactionData(0));
+    fetchMonthlyChartData();
 });

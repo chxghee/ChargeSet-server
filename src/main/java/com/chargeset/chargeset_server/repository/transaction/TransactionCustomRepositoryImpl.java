@@ -157,15 +157,13 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
     @Override
     public Page<TransactionInfoResponse> findTransactionWithFilter(LocalDate from, LocalDate to, String stationId, TransactionStatus transactionStatus, Pageable pageable) {
 
-        System.out.println("#####");
-
         Criteria criteria = getSearchingConditionCriteria(from, to, stationId, transactionStatus);
 
         MatchOperation match = Aggregation.match(criteria);
 
         SortOperation sort = Aggregation.sort(Sort.by(
                 Sort.Order.desc("endTime"),
-                Sort.Order.asc("_id")  // ✅ 유일한 필드 추가
+                Sort.Order.asc("_id")
         ));
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
@@ -208,6 +206,41 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
         return Optional.ofNullable(tx)
                 .map(ChargingProfileResponse::new);
     }
+
+
+    /**
+     * 7. 최근 한달 충전 조회
+     */
+    @Override
+    public List<ChargingDailyStat> getMonthlyChargingStatsByStationId(String stationId) {
+
+        Pair<Instant, Instant> monthlyRangeInKST = TimeUtils.getMonthlyRangeInKST();
+
+        MatchOperation match = getStationAndTimeRangeMatchOperation(monthlyRangeInKST, stationId);
+
+        AggregationOperation projectToLocalDate = getAggregationDateFormatingOperation();
+
+        GroupOperation groupOperation = Aggregation.group("date")
+                .sum("cost").as("totalRevenue")
+                .sum("energyWh").as("totalEnergy")
+                .count().as("count");
+
+        ProjectionOperation finalProject = Aggregation.project()
+                .and("_id").as("date")
+                .andInclude("totalRevenue", "totalEnergy", "count");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                projectToLocalDate,
+                groupOperation,
+                finalProject,
+                Aggregation.sort(Sort.by("date").ascending())
+        );
+
+        return mongoTemplate.aggregate(aggregation, "transaction", ChargingDailyStat.class)
+                .getMappedResults();
+    }
+
 
     //== 메서드 ==//
     private static MatchOperation getTimeRangeMatchOperation(Pair<Instant, Instant> timeRangeInKST) {

@@ -2,6 +2,7 @@ package com.chargeset.chargeset_server.controller;
 
 import com.chargeset.chargeset_server.dto.charging_station.ChargingStationInfo;
 import com.chargeset.chargeset_server.dto.tansaction.ChargingDailyStat;
+import com.chargeset.chargeset_server.dto.tansaction.ChargingStatResponse;
 import com.chargeset.chargeset_server.dto.tansaction.HourlyStatResponse;
 import com.chargeset.chargeset_server.service.ChargingStationService;
 import com.chargeset.chargeset_server.service.TransactionService;
@@ -59,5 +60,13 @@ public class ChargingStationApiController {
             searchingDate = LocalDate.now();
         }
         return ResponseEntity.ok(transactionService.getHourlyChargingStats(stationId, searchingDate));
+    }
+
+    /**
+     * 5. 최근 한달 충전소 주간 운영 그래프 - 충전 이력
+     */
+    @GetMapping("/{stationId}/monthly-revenue")
+    public ResponseEntity<ChargingStatResponse> getMonthlyRevenueStat(@PathVariable(name = "stationId") String stationId) {
+        return ResponseEntity.ok(transactionService.getMonthlyChargingStats(stationId));
     }
 }

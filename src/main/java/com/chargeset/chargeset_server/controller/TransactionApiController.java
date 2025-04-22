@@ -34,7 +34,7 @@ public class TransactionApiController {
      * 2. 주간 운영 그래프 - 대시보드
      */
     @GetMapping("/weekly-revenue")
-    public ResponseEntity<WeeklyStatResponse> getWeeklyRevenueStat() {
+    public ResponseEntity<ChargingStatResponse> getWeeklyRevenueStat() {
         return ResponseEntity.ok(transactionService.getWeeklyChargingStats());
     }
 
@@ -56,7 +56,7 @@ public class TransactionApiController {
     }
 
     /**
-     * 4. 충전 프로파일 조회
+     * 4. 충전 프로파일 조회 - 충전 이력
      */
     @GetMapping("/{transactionId}/charging-profile")
     public ResponseEntity<ChargingProfileResponse> getChargingProfile(@PathVariable(name = "transactionId") String transactionId) {

@@ -28,6 +28,14 @@ public class TimeUtils {
         return Pair.of(startOfDay, endOfDay);
     }
 
+    public static Pair<Instant, Instant> getMonthlyRangeInKST() {
+        LocalDate today = LocalDate.now(KST);
+        LocalDate sevenDaysAgo = today.minusDays(30);
+        Instant startOfDay = sevenDaysAgo.atStartOfDay(KST).toInstant();
+        Instant endOfDay = today.plusDays(1).atStartOfDay(KST).toInstant();
+        return Pair.of(startOfDay, endOfDay);
+    }
+
     public static Pair<Instant, Instant> getInputDayRangeInKST(LocalDate date) {
         Instant startOfDay = date.atStartOfDay(KST).toInstant();
         Instant endOfDay = date.plusDays(1).atStartOfDay(KST).toInstant();
