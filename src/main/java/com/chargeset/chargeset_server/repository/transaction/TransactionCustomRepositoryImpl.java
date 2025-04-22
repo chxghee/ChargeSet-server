@@ -2,10 +2,7 @@ package com.chargeset.chargeset_server.repository.transaction;
 
 import com.chargeset.chargeset_server.document.Transaction;
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingDailyStat;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingHourlyStat;
-import com.chargeset.chargeset_server.dto.tansaction.ChargingProfileResponse;
-import com.chargeset.chargeset_server.dto.tansaction.TransactionInfoResponse;
+import com.chargeset.chargeset_server.dto.tansaction.*;
 import com.chargeset.chargeset_server.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
@@ -240,6 +237,36 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
         return mongoTemplate.aggregate(aggregation, "transaction", ChargingDailyStat.class)
                 .getMappedResults();
     }
+
+
+    /**
+     * 8. 충전소별 사용자 이용률 통계
+     */
+    @Override
+    public List<UsageBucketResult> getUserChargingUsageSummaryByStationId(String stationId) {
+
+        MatchOperation match = Aggregation.match(
+                Criteria.where("stationId").is(stationId));
+
+        GroupOperation groupOperation = Aggregation.group("userId")
+                .count().as("count");
+
+        BucketOperation bucketOperation = Aggregation.bucket("count")
+                .withBoundaries(1, 2, 3, 5)
+                .withDefaultBucket("fifthOrMore")
+                .andOutput("count").count().as("userCount");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                groupOperation,
+                bucketOperation
+        );
+
+        return mongoTemplate.aggregate(aggregation, "transaction", UsageBucketResult.class)
+                .getMappedResults();
+    }
+
+
 
 
     //== 메서드 ==//

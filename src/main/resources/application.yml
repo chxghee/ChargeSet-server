@@ -4,6 +4,7 @@ spring:
       host: localhost
       port: 27017
       database: charge-set
+    #uri: mongodb://localhost:27017/charge-set?maxPoolSize=100&minPoolSize=5&maxIdleTimeMS=60000&waitQueueTimeoutMS=10000   # 커넥션 풀 설정
     #uri: ${MONGO_URI}
 
 logging:
