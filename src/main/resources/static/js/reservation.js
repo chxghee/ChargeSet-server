@@ -73,9 +73,71 @@ function formatReservationStatus(status) {
     }
 }
 
+// 충전소 미이행률 조회 API 호출
+async function fetchNoShowData() {
+
+    const url = '/api/reservations/no-show';
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const [station1, station2] = data.data;
+
+    // 카드 제목
+    document.getElementById("summary-first-title").textContent = station1.stationId;
+    document.getElementById("summary-second-title").textContent = station2.stationId;
+
+    // 카드 1
+    document.getElementById('summary-first-complete').textContent = station1.completeCount;
+    document.getElementById('summary-first-no-show').textContent = station1.expiredCount;
+    document.getElementById('summary-first-no-show-rate').textContent = calculateRate(station1.expiredCount, station1.completeCount + station1.expiredCount);
+
+    // 카드 2
+    document.getElementById('summary-second-complete').textContent = station2.completeCount;
+    document.getElementById('summary-second-no-show').textContent = station2.expiredCount;
+    document.getElementById('summary-second-no-show-rate').textContent = calculateRate(station2.expiredCount, station2.completeCount + station2.expiredCount);
+
+    setSummaryComments(data);
+}
+
+// 퍼센트 계산 유틸
+function calculateRate(part, total) {
+    if (total === 0) return '0.0';
+    return ((part / total) * 100).toFixed(1);
+}
+
+// 충전소 미이행 관련 코멘트
+function setSummaryComments(data) {
+
+    const currentRate = (data.totalNoShowRate * 100).toFixed(1);
+    const prevRate = (data.previousNoShowRate * 100).toFixed(1);
+    const rateDiff = (currentRate - prevRate).toFixed(1);
+
+    let compareText = '';
+    if (rateDiff > 0) {
+        compareText = `<span class="text-danger fw-bold">지난달(${prevRate}%) 대비 ${rateDiff}% 증가했습니다</span>`;
+    } else if (rateDiff < 0) {
+        compareText = `<span class="text-success fw-bold">지난달(${prevRate}%) 대비 ${Math.abs(rateDiff)}% 감소했습니다.</span>`;
+    } else {
+        compareText = `<span class="text-muted fw-bold">지난달과(${prevRate}%) 동일합니다.</span>`;
+    }
+
+    const message = `
+        <div class="mb-1">
+           ${data.fromDate} ~ ${data.toDate}</strong> 동안 전체 충전소의 
+            <br> <strong class="text-primary">${data.totalFinishedReservationCount}</strong>건의 예약 중 
+            <strong class="text-danger">${data.totalNoShowCount}</strong>건이 미이행되어<br>
+            <span class="text-dark">노쇼율은 <strong>${currentRate}%</strong>입니다.</span>
+        </div>
+        <div>${compareText}</div>
+    `;
+
+    document.getElementById('summary-result-message').innerHTML = message;
+}
+
 
 window.addEventListener('DOMContentLoaded', () => {
    fetchReservationData(0);
+    fetchNoShowData();
 
     // 검색 버튼 클릭 이벤트 등록
     document.querySelector("#search-button")
