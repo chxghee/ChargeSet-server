@@ -124,7 +124,7 @@ function setSummaryComments(data) {
     const message = `
         <div class="mb-1">
            ${data.fromDate} ~ ${data.toDate}</strong> 동안 전체 충전소의 
-            <br> <strong class="text-primary">${data.totalFinishedReservationCount}</strong>건의 예약 중 
+            <br> <strong class="text-primary">${data.totalFinishedReservationCount}</strong>건의 종료된 예약 중 
             <strong class="text-danger">${data.totalNoShowCount}</strong>건이 미이행되어<br>
             <span class="text-dark">노쇼율은 <strong>${currentRate}%</strong>입니다.</span>
         </div>
