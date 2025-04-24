@@ -3,15 +3,12 @@ package com.chargeset.chargeset_server.dto.tansaction;
 import com.chargeset.chargeset_server.document.ChargingSchedulePeriod;
 import com.chargeset.chargeset_server.document.Transaction;
 import com.chargeset.chargeset_server.utils.TimeUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargingProfileResponse {
 
     private String transactionId;

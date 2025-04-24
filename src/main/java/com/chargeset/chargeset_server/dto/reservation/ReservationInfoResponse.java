@@ -1,8 +1,14 @@
 package com.chargeset.chargeset_server.dto.reservation;
 
-import lombok.Data;
+import lombok.AccessLevel;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationInfoResponse {
     private String startTime;
     private String endTime;

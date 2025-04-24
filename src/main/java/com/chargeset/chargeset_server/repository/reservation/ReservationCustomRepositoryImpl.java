@@ -3,6 +3,7 @@ package com.chargeset.chargeset_server.repository.reservation;
 import com.chargeset.chargeset_server.document.Reservation;
 import com.chargeset.chargeset_server.document.status.ReservationStatus;
 import com.chargeset.chargeset_server.dto.reservation.ReservationInfoResponse;
+import com.chargeset.chargeset_server.dto.reservation.ReservationNoShowCount;
 import com.chargeset.chargeset_server.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +100,47 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
         return new PageImpl<>(reservation, pageable, total);
     }
 
+    /**
+     * 3. 충전소별 노쇼 / 완료 예약 조회
+     */
+    @Override
+    public List<ReservationNoShowCount> getNoShowCounts() {
+
+        MatchOperation match = Aggregation.match(
+                Criteria.where("reservationStatus").in("COMPLETED", "EXPIRED")
+        );
+
+        // 1차 그룹핑: 충전소 + 상태별
+        GroupOperation group = Aggregation.group("stationId", "reservationStatus")
+                .count().as("count");
+
+        // 2차 그룹핑: 충전소 기준 + 조건별 분기 합산
+        GroupOperation finalGroup = Aggregation.group("_id.stationId")
+                .sum(ConditionalOperators
+                        .when(Criteria.where("_id.reservationStatus").is("COMPLETED"))
+                        .thenValueOf("count")
+                        .otherwise(0)).as("completeCount")
+                .sum(ConditionalOperators
+                        .when(Criteria.where("_id.reservationStatus").is("EXPIRED"))
+                        .thenValueOf("count")
+                        .otherwise(0)).as("expiredCount");
+
+
+
+        ProjectionOperation project = Aggregation.project()
+                .and("_id").as("stationId")
+                .andInclude("completeCount", "expiredCount");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                group,
+                finalGroup,
+                project
+        );
+
+        return mongoTemplate.aggregate(aggregation, "reservation", ReservationNoShowCount.class)
+                .getMappedResults();
+    }
 
     //== 메서드 ==//
     private static AggregationOperation getAggregationDateFormatingOperation() {

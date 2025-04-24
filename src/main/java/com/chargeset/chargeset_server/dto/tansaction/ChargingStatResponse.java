@@ -1,12 +1,12 @@
 package com.chargeset.chargeset_server.dto.tansaction;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargingStatResponse {
     private long totalCount;
     private long totalRevenue;

@@ -1,14 +1,12 @@
 package com.chargeset.chargeset_server.dto.tansaction;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargingDailyStat {
     private LocalDate date;
     private long totalRevenue;  // 오늘 매출 원

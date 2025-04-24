@@ -1,10 +1,10 @@
 package com.chargeset.chargeset_server.dto.tansaction;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargingUsageResponse {
 
     private long once;

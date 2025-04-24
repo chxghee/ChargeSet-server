@@ -1,13 +1,13 @@
 package com.chargeset.chargeset_server.dto.tansaction;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HourlyStatResponse {
     private LocalDate date;
     private String stationId;
