@@ -104,10 +104,14 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
      * 3. 충전소별 노쇼 / 완료 예약 조회
      */
     @Override
-    public List<ReservationNoShowCount> getNoShowCounts() {
+    public List<ReservationNoShowCount> getNoShowCounts(LocalDate from, LocalDate to) {
+
+        Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
 
         MatchOperation match = Aggregation.match(
                 Criteria.where("reservationStatus").in("COMPLETED", "EXPIRED")
+                        .and("startTime").gte(utcRangeInKST.getFirst())
+                        .and("endTime").lte(utcRangeInKST.getSecond())
         );
 
         // 1차 그룹핑: 충전소 + 상태별
