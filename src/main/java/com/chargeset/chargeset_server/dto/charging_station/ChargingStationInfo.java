@@ -1,13 +1,11 @@
 package com.chargeset.chargeset_server.dto.charging_station;
 
 import com.chargeset.chargeset_server.document.Location;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChargingStationInfo {      // 위치 정보만 담는다
 
     private String id;

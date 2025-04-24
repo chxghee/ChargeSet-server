@@ -16,41 +16,42 @@ public class TimeUtils {
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Pair<Instant, Instant> getTodayRangeInKST() {
-        LocalDate today = LocalDate.now(KST);
-        return getInputDayRangeInKST(today);
+        return getRangeInKST(LocalDate.now(KST), LocalDate.now(KST));
     }
 
     public static Pair<Instant, Instant> getWeeklyRangeInKST() {
         LocalDate today = LocalDate.now(KST);
-        LocalDate sevenDaysAgo = today.minusDays(6);
-        Instant startOfDay = sevenDaysAgo.atStartOfDay(KST).toInstant();
-        Instant endOfDay = today.plusDays(1).atStartOfDay(KST).toInstant();
-        return Pair.of(startOfDay, endOfDay);
+        return getRangeInKST(today.minusDays(6), today);
     }
 
     public static Pair<Instant, Instant> getMonthlyRangeInKST() {
         LocalDate today = LocalDate.now(KST);
-        LocalDate sevenDaysAgo = today.minusDays(30);
-        Instant startOfDay = sevenDaysAgo.atStartOfDay(KST).toInstant();
-        Instant endOfDay = today.plusDays(1).atStartOfDay(KST).toInstant();
-        return Pair.of(startOfDay, endOfDay);
+        return getRangeInKST(today.minusDays(30), today);
+    }
+
+    public static Pair<Instant, Instant> getUTCRangeInKST(LocalDate from, LocalDate to) {
+        return getRangeInKST(from, to);
     }
 
     public static Pair<Instant, Instant> getInputDayRangeInKST(LocalDate date) {
-        Instant startOfDay = date.atStartOfDay(KST).toInstant();
-        Instant endOfDay = date.plusDays(1).atStartOfDay(KST).toInstant();
-        return Pair.of(startOfDay, endOfDay);
+        return getRangeInKST(date, date);
     }
 
     public static Instant convertDateToUTC(LocalDate date) {
-        return date.atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant();
+        return date.atStartOfDay(KST).toInstant();
     }
 
     public static LocalDateTime convertInstantToKST(Instant instant) {
-        return LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Seoul"));
+        return LocalDateTime.ofInstant(instant, KST);
     }
 
     public static String formatInstantToKSTString(Instant instant) {
         return convertInstantToKST(instant).format(DEFAULT_FORMATTER);
+    }
+
+    private static Pair<Instant, Instant> getRangeInKST(LocalDate startDate, LocalDate endDate) {
+        Instant start = startDate.atStartOfDay(KST).toInstant();
+        Instant end = endDate.plusDays(1).atStartOfDay(KST).toInstant(); // inclusive
+        return Pair.of(start, end);
     }
 }

@@ -45,3 +45,7 @@
     font-weight: bold;
     color: #333;
 }
+
+#summary-cards .card {
+    border-width: 2px;
+}

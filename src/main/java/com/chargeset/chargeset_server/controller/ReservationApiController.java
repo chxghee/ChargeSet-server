@@ -1,6 +1,7 @@
 package com.chargeset.chargeset_server.controller;
 
 import com.chargeset.chargeset_server.document.status.ReservationStatus;
+import com.chargeset.chargeset_server.dto.reservation.NoShowCountResponse;
 import com.chargeset.chargeset_server.dto.reservation.ReservationInfoResponse;
 import com.chargeset.chargeset_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,6 +51,14 @@ public class ReservationApiController {
         if (to == null) to = LocalDate.now();
         if (from == null) from = LocalDate.now().minusMonths(3);
         return reservationService.getReservationStats(from, to, stationId, status, pageable);
+    }
+
+    /**
+     * 3. 노쇼율 집계 - 예약
+     */
+    @GetMapping("/no-show")
+    public ResponseEntity<NoShowCountResponse> noShow() {
+        return ResponseEntity.ok(reservationService.getNoShowCount());
     }
 
 }

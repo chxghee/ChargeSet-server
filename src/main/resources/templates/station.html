@@ -15,7 +15,7 @@
 
   <div class="container-fluid">
 
-    <h1 class="page-title" th:text="${chargingStationInfo.name}"></h1>
+    <h1 class="page-title" th:text="|${chargingStationInfo.name} (${stationId})|"></h1>
     <h4 style="color: dimgray" th:text="${chargingStationInfo.location.address}"></h4>
 
     <hr/>

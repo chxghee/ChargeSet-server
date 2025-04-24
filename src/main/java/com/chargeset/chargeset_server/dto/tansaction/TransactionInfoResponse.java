@@ -1,9 +1,11 @@
 package com.chargeset.chargeset_server.dto.tansaction;
 
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionInfoResponse {
 
     private String startTime;

@@ -1,12 +1,13 @@
 package com.chargeset.chargeset_server.dto.charging_station;
 
 import com.chargeset.chargeset_server.document.status.EvseStatus;
-import lombok.Data;
+import lombok.*;
 
 import java.util.EnumMap;
 import java.util.List;
 
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvseStatusSummary {
 
     private int available;

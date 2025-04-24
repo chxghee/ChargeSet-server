@@ -20,6 +20,52 @@
         <hr>
 
 
+        <div class="card-box">
+            <div class="section-title mb-3">최근 30일 충전소별 미이행(노쇼) 예약 정보</div>
+
+            <div class="row row-cols-1 row-cols-md-2 g-3 mb-4" id="summary-cards">
+                <div class="col">
+                    <div class="card border-primary shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary" id="summary-first-title">충전소 1</h5>
+                            <p class="card-text mb-1">
+                                <strong>정상 완료 건수:</strong> <span id="summary-first-complete">-</span> 건
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>미이행 건수:</strong> <span id="summary-first-no-show">-</span> 건
+                            </p>
+                            <p class="card-text mb-0">
+                                <strong>미이행 비율:</strong> <span id="summary-first-no-show-rate">-</span> %
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card border-success shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-success" id="summary-second-title">충전소 2</h5>
+                            <p class="card-text mb-1">
+                                <strong>정상 완료 건수:</strong> <span id="summary-second-complete">-</span> 건
+                            </p>
+                            <p class="card-text mb-1">
+                                <strong>미이행 건수:</strong> <span id="summary-second-no-show">-</span> 건
+                            </p>
+                            <p class="card-text mb-0">
+                                <strong>미이행 비율:</strong> <span id="summary-second-no-show-rate">-</span> %
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결과 정리 멘트 -->
+            <div id="summary-result-message" class="mt-3 px-3 text-center fw-semibold"
+                 style="font-size: 16px; line-height: 1.8;"></div>
+
+        </div>
+
+
         <!-- 전체 예약 조회  -->
         <div class="card-box">
             <div class="section-title">예약 조회</div>
@@ -39,7 +85,7 @@
 
                 <!-- 상태 선택 -->
                 <div>
-                    <label for="status-select" class="form-label mb-1">충전 상태</label>
+                    <label for="status-select" class="form-label mb-1">예약 상태</label>
                     <select id="status-select" class="form-select" style="min-width: 160px;">
                         <option value="">전체</option>
                         <option value="COMPLETED">충전 완료된 예약</option>
@@ -94,9 +140,6 @@
                 </ul>
             </nav>
         </div>
-
-
-
 
     </div>
 </div>
