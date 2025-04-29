@@ -27,4 +27,6 @@ public interface TransactionCustomRepository {
     List<ChargingDailyStat> getMonthlyChargingStatsByStationId(String stationId);
 
     List<UsageBucketResult> getUserChargingUsageSummaryByStationId(String stationId);
+
+    List<ChargingStat> getChargingStatsReport(LocalDate from, LocalDate to);
 }

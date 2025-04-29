@@ -267,6 +267,39 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
     }
 
 
+    /**
+     * 9. 충전소별 저번달 매출 집계 조회
+     */
+    @Override
+    public List<ChargingStat> getChargingStatsReport(LocalDate from, LocalDate to) {
+
+        Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
+
+
+        MatchOperation match = Aggregation.match(
+                Criteria.where("endTime")
+                        .gte(utcRangeInKST.getFirst())
+                        .lte(utcRangeInKST.getSecond())
+        );
+
+        GroupOperation group = Aggregation.group("stationId")
+                .count().as("totalCount")
+                .sum("cost").as("totalRevenue")
+                .sum("energyWh").as("totalEnergy");
+
+        ProjectionOperation project = Aggregation.project()
+                .and("_id").as("stationId")
+                .andInclude("totalCount", "totalRevenue", "totalEnergy");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                group,
+                project
+        );
+
+        return mongoTemplate.aggregate(aggregation, "transaction", ChargingStat.class)
+                .getMappedResults();
+    }
 
 
     //== 메서드 ==//

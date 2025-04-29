@@ -107,7 +107,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
     public List<ReservationNoShowCount> getNoShowCounts(LocalDate from, LocalDate to) {
 
         Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
-
+        System.out.println(utcRangeInKST.getFirst()+" "+utcRangeInKST.getSecond());
         MatchOperation match = Aggregation.match(
                 Criteria.where("reservationStatus").in("COMPLETED", "EXPIRED")
                         .and("startTime").gte(utcRangeInKST.getFirst())
