@@ -1,0 +1,130 @@
+<!-- report.html - 수정된 버전 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+    <title>ChargeSet - 보고서</title>
+    <th:block id="page-css">
+        <link rel="stylesheet" th:href="@{/css/report.css}">
+    </th:block>
+</head>
+
+<body>
+<div id="page-content">
+    <div class="container-fluid">
+
+        <h1 class="page-title" id="report-title">보고서</h1>
+        <hr>
+
+        <!-- 오늘 통계 -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">총 충전 횟수</div>
+                    <div class="highlight" id="total-station-charging-usage">00회</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">총 전력 사용량(kWh)</div>
+                    <div class="highlight text-success" id="total-station-energy-usage">00 kWh</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">총 매출</div>
+                    <div class="highlight text-primary" id="total-station-revenue">00원</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card-box text-center">
+                    <div class="section-title">매출 성장률</div>
+                    <div class="highlight" id="total-station-revenue-growth-rate">0.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 비교 분석 카드 -->
+        <div class="card-box mb-5">
+            <div class="section-title mb-3">충전소별 요약</div>
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div class="col">
+                    <div class="card border-primary shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary" id="summary-first-title">충전소 1</h5>
+                            <p class="card-text mb-1"><strong>총 매출:</strong> <span id="summary-first-revenue">-</span> 원</p>
+                            <p class="card-text mb-1"><strong>총 전력량:</strong> <span id="summary-first-energy">-</span> kWh</p>
+                            <p class="card-text mb-1"><strong>총 충전 횟수:</strong> <span id="summary-first-count">-</span> 회</p>
+                            <p class="card-text mb-0"><strong>매출 성장률:</strong> <span id="summary-first-growth-rate">-</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card border-success shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-success" id="summary-second-title">충전소 2</h5>
+                            <p class="card-text mb-1"><strong>총 매출:</strong> <span id="summary-second-revenue">-</span> 원</p>
+                            <p class="card-text mb-1"><strong>총 전력량:</strong> <span id="summary-second-energy">-</span> kWh</p>
+                            <p class="card-text mb-1"><strong>총 충전 횟수:</strong> <span id="summary-second-count">-</span> 회</p>
+                            <p class="card-text mb-0"><strong>매출 성장률:</strong> <span id="summary-second-growth-rate">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 충전소별 매출 성장 비교 -->
+            <div class="card-box mb-5">
+                <div class="section-title text-center mb-3">전월대비 매출 성장 비교</div>
+                <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+                    <canvas id="total-revenue-growth-chart" height="150"></canvas>
+                </div>
+            </div>
+
+            <!-- 결과 정리 멘트 -->
+            <div id="summary-result-message" class="mt-4 px-3 text-center fw-semibold"
+                 style="font-size: 16px; line-height: 1.8;"></div>
+        </div>
+
+
+
+
+        <!-- 충전소 비교 분석 (파이차트 3개) -->
+        <div class="card-box">
+            <div class="section-title text-center mb-4">충전소별 비교 분석</div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card-box text-center" style="height: 300px;">
+                        <div class="section-title">매출 비교</div>
+                        <div style="width: 100%; height: 230px;">
+                            <canvas id="revenue-donut-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-box text-center" style="height: 300px;">
+                        <div class="section-title">충전 횟수 비교</div>
+                        <div style="width: 100%; height: 230px;">
+                            <canvas id="count-donut-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-box text-center" style="height: 300px;">
+                        <div class="section-title">전력 사용량 비교</div>
+                        <div style="width: 100%; height: 230px;">
+                            <canvas id="energy-donut-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<th:block id="page-script">
+    <script th:src="@{/js/report.js}" defer></script>
+</th:block>
+</body>
+</html>

@@ -5,16 +5,16 @@
         <li><a href="/" th:classappend="${activePage == 'dashboard'} ? 'active'">대시 보드</a></li>
 
 
-        <li class="has-submenu" th:classappend="${activePage == 'stations'} ? ' open'">
-            <span th:classappend="${activePage == 'stations'} ? 'active'">개별 충전소 현황</span>
+        <li class="has-submenu" th:classappend="${activePage == 'station'} ? ' open'">
+            <span th:classappend="${activePage == 'station'} ? 'active'">개별 충전소 현황</span>
             <ul class="submenu">
-                <li><a href="/stations/ST-001" th:classappend="${stationId == 'ST-001'} ? 'active'">- 세종대학교 충전소</a></li>
-                <li><a href="/stations/ST-002" th:classappend="${stationId == 'ST-002'} ? 'active'">- 서울 시청 충전소</a></li>
+                <li><a href="/station/ST-001" th:classappend="${stationId == 'ST-001'} ? 'active'">- 세종대학교 충전소</a></li>
+                <li><a href="/station/ST-002" th:classappend="${stationId == 'ST-002'} ? 'active'">- 서울 시청 충전소</a></li>
             </ul>
         </li>
 
-        <li><a href="/transactions" th:classappend="${activePage == 'transaction'} ? 'active'">충전 이력</a></li>
-        <li><a href="/reservations" th:classappend="${activePage == 'reservation'} ? 'active'">예약</a></li>
+        <li><a href="/transaction" th:classappend="${activePage == 'transaction'} ? 'active'">충전 이력</a></li>
+        <li><a href="/reservation" th:classappend="${activePage == 'reservation'} ? 'active'">예약</a></li>
 
         <li><a href="/report" th:classappend="${activePage == 'report'} ? 'active'">보고서</a></li>
     </ul>

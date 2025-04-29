@@ -32,19 +32,19 @@
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">금일 사용자</div>
-                    <div class="highlight" th:text="${todayChargingStats.count + '명'}">17명</div>
+                    <div class="highlight" th:text="${todayChargingStats.count + '명'}">00명</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">사용 전력량</div>
-                    <div class="highlight" th:text="${todayChargingStats.totalEnergy + ' kWh'}">20000 kWh</div>
+                    <div class="highlight" th:text="${todayChargingStats.totalEnergy + ' kWh'}">00 kWh</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">금일 매출</div>
-                    <div class="highlight text-success" th:text="${todayChargingStats.totalRevenue + '원'}">277738원</div>
+                    <div class="highlight text-primary" th:text="${todayChargingStats.totalRevenue + '원'}">00원</div>
                 </div>
             </div>
         </div>

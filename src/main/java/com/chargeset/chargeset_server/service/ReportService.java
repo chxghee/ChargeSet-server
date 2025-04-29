@@ -30,7 +30,7 @@ public class ReportService {
     private final ChargingStationRepository chargingStationRepository;
 
     /**
-     * 1. 지난달, 충전소별 매출 집계 - 임시
+     * 1. 지난달, 충전소별 매출 집계
      */
     public TotalStatResponse getMonthlyTotalReport(YearMonth month) {
 

@@ -33,19 +33,19 @@ public class HomeController {
         return "dashboard";
     }
 
-    @GetMapping("/stations/{stationId}")
+    @GetMapping("/station/{stationId}")
     public String stations(@PathVariable(name = "stationId") String stationId, Model model) {
 
         ChargingStationInfo chargingStationInfo = chargingStationService.getChargingStationInfo(stationId);
 
-        model.addAttribute("activePage", "stations");
+        model.addAttribute("activePage", "station");
         model.addAttribute("stationId", stationId);
         model.addAttribute("chargingStationInfo", chargingStationInfo);
 
         return "station";
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("/transaction")
     public String transactions(Model model) {
         List<ChargingStationInfo> chargingStationsLocation = chargingStationService.getChargingStationsInfo();
         model.addAttribute("chargingStations", chargingStationsLocation);
@@ -53,10 +53,16 @@ public class HomeController {
         return "transaction";
     }
 
-    @GetMapping("/reservations")
+    @GetMapping("/reservation")
     public String reservations(Model model) {
         model.addAttribute("activePage", "reservation");
         return "reservation";
+    }
+
+    @GetMapping("/report")
+    public String reports(Model model) {
+        model.addAttribute("activePage", "report");
+        return "report";
     }
 
 
