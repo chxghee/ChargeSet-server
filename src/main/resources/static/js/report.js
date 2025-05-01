@@ -19,6 +19,11 @@ async function fetchTotalStats() {
 
         const totalGrowthRate = Number(data.revenueGrowthRate.toFixed(1));
 
+
+        const date = new Date(data.fromDate);
+        const formatted = `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+        document.getElementById('report-title').textContent = `${formatted} 보고서`;
+
         // ✅ 상단 통계
         document.getElementById('total-station-charging-usage').textContent = `${data.totalCount.toLocaleString()}회`;
         document.getElementById('total-station-energy-usage').textContent = `${totalEnergyKWh.toLocaleString()} kWh`;
@@ -252,5 +257,37 @@ function basePieChartOptions(unit) {
             }
         }
     };
+}
+
+
+async function downloadExcel() {
+    try {
+        const res = await fetch('/api/report/download-excel');
+
+        if (!res.ok) {
+            throw new Error('엑셀 파일 다운로드 실패');
+        }
+
+        const blob = await res.blob();
+        const disposition = res.headers.get('Content-Disposition') || '';
+        const fileNameMatch = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        let fileName = 'report.xlsx';
+
+        if (fileNameMatch && fileNameMatch[1]) {
+            fileName = fileNameMatch[1].replace(/['"]/g, ''); // 따옴표 제거
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        alert('엑셀 다운로드 중 오류가 발생했습니다.');
+        console.error(error);
+    }
 }
 
