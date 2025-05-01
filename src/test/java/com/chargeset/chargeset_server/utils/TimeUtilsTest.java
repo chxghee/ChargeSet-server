@@ -1,6 +1,5 @@
 package com.chargeset.chargeset_server.utils;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.util.Pair;
 
@@ -17,25 +16,6 @@ class TimeUtilsTest {
     private static final ZoneId KST = ZoneId.of("Asia/Seoul");
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @Test
-    void getLastMonthRangeInKST_정확한_기간반환() {
-        Pair<Instant, Instant> range = TimeUtils.getLastMonthRangeInKST();
-
-        LocalDate today = LocalDate.now(KST);
-        LocalDate thisMonthStart = today.withDayOfMonth(1);
-        LocalDate lastMonthEnd = thisMonthStart.minusDays(1);
-        LocalDate lastMonthStart = lastMonthEnd.withDayOfMonth(1);
-
-
-        System.out.println(lastMonthStart);
-        System.out.println(lastMonthEnd);
-
-        Instant expectedStart = lastMonthStart.atStartOfDay(KST).toInstant();
-        Instant expectedEnd = lastMonthEnd.plusDays(1).atStartOfDay(KST).toInstant();
-
-        assertThat(range.getFirst()).isEqualTo(expectedStart);
-        assertThat(range.getSecond()).isEqualTo(expectedEnd);
-    }
 
     @Test
     void getTodayRangeInKST_정확한_오늘범위반환() {

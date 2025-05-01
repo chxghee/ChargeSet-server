@@ -158,10 +158,7 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
 
         MatchOperation match = Aggregation.match(criteria);
 
-        SortOperation sort = Aggregation.sort(Sort.by(
-                Sort.Order.desc("endTime"),
-                Sort.Order.asc("_id")
-        ));
+        SortOperation sort = getSortOperationByEndTimeDesc();
 
         SkipOperation skip = Aggregation.skip(pageable.getOffset());
         LimitOperation limit = Aggregation.limit(pageable.getPageSize());
@@ -275,12 +272,7 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
 
         Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
 
-
-        MatchOperation match = Aggregation.match(
-                Criteria.where("endTime")
-                        .gte(utcRangeInKST.getFirst())
-                        .lte(utcRangeInKST.getSecond())
-        );
+        MatchOperation match = getMatchOperationByEndTimeRange(utcRangeInKST);
 
         GroupOperation group = Aggregation.group("stationId")
                 .count().as("totalCount")
@@ -301,6 +293,34 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
                 .getMappedResults();
     }
 
+    /**
+     * 10. 엑셀 보고서용 한달간 츙전정보
+     */
+    @Override
+    public List<TransactionInfoResponse> findAllTransactionByStationIdAndEndTime(String stationId, LocalDate from, LocalDate to) {
+
+        Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
+
+        MatchOperation match = Aggregation.match(
+                Criteria.where("endTime")
+                        .gte(utcRangeInKST.getFirst())
+                        .lte(utcRangeInKST.getSecond())
+                        .and("stationId").is(stationId)
+        );
+
+        AggregationOperation project = getAggregationDateFormatingOperationInFindTransactions();
+
+        SortOperation sort = getSortOperationByEndTimeDesc();
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                sort,
+                project
+        );
+
+        return mongoTemplate.aggregate(aggregation, "transaction", TransactionInfoResponse.class)
+                .getMappedResults();
+    }
 
     //== 메서드 ==//
     private static MatchOperation getTimeRangeMatchOperation(Pair<Instant, Instant> timeRangeInKST) {
@@ -310,6 +330,21 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
                 .and("transactionStatus").is("COMPLETED");
 
         return Aggregation.match(criteria);
+    }
+
+    private static MatchOperation getMatchOperationByEndTimeRange(Pair<Instant, Instant> utcRangeInKST) {
+        return Aggregation.match(
+                Criteria.where("endTime")
+                        .gte(utcRangeInKST.getFirst())
+                        .lte(utcRangeInKST.getSecond())
+        );
+    }
+
+    private static SortOperation getSortOperationByEndTimeDesc() {
+        return Aggregation.sort(Sort.by(
+                Sort.Order.desc("endTime"),
+                Sort.Order.asc("_id")
+        ));
     }
 
     private static MatchOperation getStationAndTimeRangeMatchOperation(Pair<Instant, Instant> timeRangeInKST, String stationId) {

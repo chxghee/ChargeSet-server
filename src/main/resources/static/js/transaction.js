@@ -354,4 +354,8 @@ async function fetchMonthlyChartData() {
 window.addEventListener('DOMContentLoaded', () => {
     fetchTransactionData(0);
     fetchMonthlyChartData();
+
+    // 검색 버튼 클릭 이벤트 등록
+    document.querySelector("#search-button")
+        .addEventListener("click", () => fetchTransactionData(0));
 });

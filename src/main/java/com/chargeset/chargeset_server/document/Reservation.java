@@ -13,7 +13,7 @@ public class Reservation {
 
     private String stationId;
     private String evseId;
-    private int connector;
+    private int connectorId;
 
     private String userId;
     private String idToken;
