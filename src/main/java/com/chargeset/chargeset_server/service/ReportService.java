@@ -91,8 +91,6 @@ public class ReportService {
             workbook.write(outputStream);
             return new ByteArrayResource(outputStream.toByteArray());
         }
-
-
     }
 
     private void createSummarySheet(YearMonth month, Workbook workbook) {
@@ -131,10 +129,9 @@ public class ReportService {
         summaryRow3.createCell(1).setCellValue("총 에너지 (Wh)");
         summaryRow3.createCell(2).setCellValue(stat.getTotalEnergy());
 
-        sheet.createRow(rowIdx++); // 줄 바꿈
-        sheet.createRow(rowIdx++); // 줄 바꿈
+        sheet.createRow(rowIdx++);
+        sheet.createRow(rowIdx++);
 
-        // ▶ 충전소별 상세 테이블 헤더
         Cell subTitle2 = sheet.createRow(rowIdx++).createCell(1);
         subTitle2.setCellValue("[전체 충전소 통계]");
         subTitle2.setCellStyle(boldStyle);
@@ -148,7 +145,6 @@ public class ReportService {
             cell.setCellStyle(boldStyle);
         }
 
-        // ▶ 충전소별 상세 데이터
         for (StationStatReport r : stat.getStationChargingStats()) {
             Row row = sheet.createRow(rowIdx++);
             row.createCell(1).setCellValue(r.getStationId());
@@ -214,7 +210,6 @@ public class ReportService {
             cell.setCellStyle(boldStyle);
         }
 
-        // ▶ 충전소별 상세 데이터
         for (ReservationInfoResponse r : reservations) {
             int col = 1;
             Row row = sheet.createRow(rowIdx++);
@@ -237,14 +232,12 @@ public class ReportService {
         // 보고서 제목 설정
         setReportTitle(sheet, "충전소별 월간 충전 이력", reportMonth.getFirst(), reportMonth.getSecond(), 3);
 
-        // 예약 리스트 작성
         int rowIdx = 3;
         rowIdx = setTransactionInfos(sheet, "ST-001", reportMonth, rowIdx, boldStyle);
         sheet.createRow(rowIdx++);
         sheet.createRow(rowIdx++);
         setTransactionInfos(sheet, "ST-002", reportMonth, rowIdx, boldStyle);
 
-        // 자동 너비 조정
         for (int i = 0; i <= 9; i++) {
             sheet.autoSizeColumn(i);
         }
@@ -271,8 +264,6 @@ public class ReportService {
             cell.setCellStyle(boldStyle);
         }
 
-
-        // ▶ 충전소별 상세 데이터
         for (TransactionInfoResponse t : transactions) {
             int col = 1;
             Row row = sheet.createRow(rowIdx++);
@@ -305,7 +296,7 @@ public class ReportService {
         Row periodRow = sheet.createRow(1);
         periodRow.createCell(column + 4).setCellValue("기간");
         periodRow.createCell(column + 5).setCellValue(reportStartDate + " ~ " + reportEndDate);
-        sheet.createRow(2); // 줄 바꿈
+        sheet.createRow(2);
     }
 
 
