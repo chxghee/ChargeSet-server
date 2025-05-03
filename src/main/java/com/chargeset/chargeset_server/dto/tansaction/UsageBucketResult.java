@@ -6,6 +6,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UsageBucketResult {
-    private String id;
+    private String id;      // stationId
     private long userCount;
 }

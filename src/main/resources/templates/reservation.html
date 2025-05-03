@@ -1,9 +1,9 @@
-<!-- transaction.html -->
+<!-- reservation.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
 <head>
-    <title>ChargeSet - 충전 현황</title>
+    <title>ChargeSet - 예약 현황</title>
 
     <th:block id="page-css">
         <link rel="stylesheet" th:href="@{/css/reservation.css}">
@@ -147,8 +147,8 @@
 <th:block id="page-script">
 
     <!-- 분리된 JS 파일 로딩 -->
-    <script th:src="@{/js/pagination.js}"></script>
-    <script th:src="@{/js/reservation.js}"></script>
+    <script th:src="@{/js/pagination.js}" defer></script>
+    <script th:src="@{/js/reservation.js}" defer></script>
 </th:block>
 </body>
 </html>

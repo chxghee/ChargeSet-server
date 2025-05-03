@@ -16,7 +16,6 @@ async function fetchReservationData(page) {
     params.append('page', page);
     params.append('size', pageSize);
 
-
     const url = `/api/reservations/all?${params.toString()}`;
 
     try {
@@ -136,7 +135,7 @@ function setSummaryComments(data) {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-   fetchReservationData(0);
+    fetchReservationData(0);
     fetchNoShowData();
 
     // 검색 버튼 클릭 이벤트 등록

@@ -32,7 +32,7 @@ public class Transaction {
     private int energyWh;
     private int cost;
 
-    private TransactionStatus status;
+    private TransactionStatus transactionStatus;
 
     // 충전 프로파일 관련 스냅샷
     private Instant startSchedule;

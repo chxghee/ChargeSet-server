@@ -3,10 +3,7 @@ package com.chargeset.chargeset_server.utils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -27,6 +24,12 @@ public class TimeUtils {
     public static Pair<Instant, Instant> getMonthlyRangeInKST() {
         LocalDate today = LocalDate.now(KST);
         return getRangeInKST(today.minusDays(30), today);
+    }
+
+    public static Pair<LocalDate, LocalDate> getMonthlyRangeByMonth(YearMonth month) {
+        LocalDate from = month.atDay(1);
+        LocalDate to = month.atEndOfMonth();
+        return Pair.of(from, to);
     }
 
     public static Pair<Instant, Instant> getUTCRangeInKST(LocalDate from, LocalDate to) {

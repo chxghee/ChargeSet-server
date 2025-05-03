@@ -96,7 +96,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
         List<ReservationInfoResponse> reservation = mongoTemplate.aggregate(aggregation, "reservation", ReservationInfoResponse.class).getMappedResults();
 
         // total 개수 계산용
-        long total = mongoTemplate.count(new Query(criteria), Reservation.class);       // 최적화 필요 - facet 로 전체 개수 쿼리도 조회 하기
+        long total = mongoTemplate.count(new Query(criteria), Reservation.class);
         return new PageImpl<>(reservation, pageable, total);
     }
 
@@ -110,8 +110,9 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 
         MatchOperation match = Aggregation.match(
                 Criteria.where("reservationStatus").in("COMPLETED", "EXPIRED")
-                        .and("startTime").gte(utcRangeInKST.getFirst())
-                        .and("endTime").lte(utcRangeInKST.getSecond())
+                        .and("startTime")
+                        .gte(utcRangeInKST.getFirst())
+                        .lte(utcRangeInKST.getSecond())
         );
 
         // 1차 그룹핑: 충전소 + 상태별
@@ -144,6 +145,37 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 
         return mongoTemplate.aggregate(aggregation, "reservation", ReservationNoShowCount.class)
                 .getMappedResults();
+    }
+
+    /**
+     * 4. 엑셀용 한달간 예약 데이터 조회
+     */
+    @Override
+    public List<ReservationInfoResponse> findAllReservationsByStationIdAndStartTime(String stationId, LocalDate from, LocalDate to) {
+
+        Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
+
+        MatchOperation match = Aggregation.match(
+                Criteria.where("startTime")
+                        .gte(utcRangeInKST.getFirst())
+                        .lte(utcRangeInKST.getSecond())
+                        .and("stationId").is(stationId)
+        );
+
+        AggregationOperation projectToLocalDate = getAggregationDateFormatingOperation();
+
+        SortOperation sort = Aggregation.sort(Sort.by(
+                Sort.Order.desc("startTime"),
+                Sort.Order.asc("_id")
+        ));
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                projectToLocalDate,
+                sort
+        );
+
+        return mongoTemplate.aggregate(aggregation, "reservation", ReservationInfoResponse.class).getMappedResults();
     }
 
     //== 메서드 ==//
@@ -180,11 +212,11 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
         Criteria criteria = new Criteria();
 
         if (from != null && to != null) {
-            Instant fromDate = TimeUtils.convertDateToUTC(from);
-            Instant toDate = TimeUtils.convertDateToUTC(to.plusDays(1));
+            Pair<Instant, Instant> utcRangeInKST = TimeUtils.getUTCRangeInKST(from, to);
+
             criteria.and("startTime")
-                    .gte(fromDate)
-                    .lt(toDate);
+                    .gte(utcRangeInKST.getFirst())
+                    .lt(utcRangeInKST.getSecond());
         }
 
         if (stationId != null) {

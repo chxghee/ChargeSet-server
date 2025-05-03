@@ -15,5 +15,7 @@ public interface ReservationCustomRepository {
     Page<ReservationInfoResponse> findReservationsWithFilter(LocalDate from, LocalDate to, String stationId,
                                                              ReservationStatus status, Pageable pageable);
 
+    List<ReservationInfoResponse> findAllReservationsByStationIdAndStartTime(String stationId, LocalDate from, LocalDate to);
+
     List<ReservationNoShowCount> getNoShowCounts(LocalDate from, LocalDate to);
 }
