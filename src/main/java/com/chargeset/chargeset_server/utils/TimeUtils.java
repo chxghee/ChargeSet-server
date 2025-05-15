@@ -52,6 +52,12 @@ public class TimeUtils {
         return convertInstantToKST(instant).format(DEFAULT_FORMATTER);
     }
 
+    public static Pair<Instant, Instant> getUTCTimeRangeInKST(LocalDateTime from, LocalDateTime to) {
+        Instant start = from.atZone(KST).toInstant();
+        Instant end = to.atZone(KST).toInstant();
+        return Pair.of(start, end);
+    }
+
     private static Pair<Instant, Instant> getRangeInKST(LocalDate startDate, LocalDate endDate) {
         Instant start = startDate.atStartOfDay(KST).toInstant();
         Instant end = endDate.plusDays(1).atStartOfDay(KST).toInstant(); // inclusive

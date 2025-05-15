@@ -20,4 +20,15 @@ public class Evse {
     private EvseStatus status;
     private Instant lastUpdated;
     private String stationId;
+
+    public Evse(String evseId, int connectorId, String powerType, int voltage, int currentA, EvseStatus status, Instant lastUpdated, String stationId) {
+        this.evseId = evseId;
+        this.connectorId = connectorId;
+        this.powerType = powerType;
+        this.voltage = voltage;
+        this.currentA = currentA;
+        this.status = status;
+        this.lastUpdated = lastUpdated;
+        this.stationId = stationId;
+    }
 }
