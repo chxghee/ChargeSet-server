@@ -2,6 +2,7 @@ package com.chargeset.chargeset_server.repository.reservation;
 
 import com.chargeset.chargeset_server.document.Reservation;
 import com.chargeset.chargeset_server.document.status.ReservationStatus;
+import com.chargeset.chargeset_server.dto.EvseIdOnly;
 import com.chargeset.chargeset_server.dto.reservation.ReservationInfoResponse;
 import com.chargeset.chargeset_server.dto.reservation.ReservationNoShowCount;
 import com.chargeset.chargeset_server.utils.TimeUtils;
@@ -20,6 +21,7 @@ import org.springframework.data.util.Pair;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -131,7 +133,6 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
                         .otherwise(0)).as("expiredCount");
 
 
-
         ProjectionOperation project = Aggregation.project()
                 .and("_id").as("stationId")
                 .andInclude("completeCount", "expiredCount");
@@ -177,6 +178,44 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
 
         return mongoTemplate.aggregate(aggregation, "reservation", ReservationInfoResponse.class).getMappedResults();
     }
+
+
+    /**
+     * 5. 예약 가능한 evse 조회
+     */
+    @Override
+    public List<EvseIdOnly> findOccupiedEvseIdsReservedAt(String stationId, LocalDateTime from, LocalDateTime to) {
+        Pair<Instant, Instant> utcTimeRangeInKST = TimeUtils.getUTCTimeRangeInKST(from, to);
+
+        // 1. 점유된 상황이려면
+        // 일단 충전소 아이디 같아야함
+        // 기존 예약 시작 시간 < 예약하려는 종료 시간
+        // 기존 예약 종료 시간 > 예약하려는 시작 시간
+        // 예약 상태 != CANCELED
+
+        Criteria criteria = Criteria.where("stationId").is(stationId)
+                .and("startTime").lte(utcTimeRangeInKST.getSecond())
+                .and("endTime").gte(utcTimeRangeInKST.getFirst())
+                .and("reservationStatus").in("ACTIVE", "WAITING", "ONGOING");
+
+        MatchOperation match = Aggregation.match(criteria);
+
+        GroupOperation group = Aggregation.group("evseId");
+
+        ProjectionOperation project = Aggregation.project()
+                .and("_id").as("evseId");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                group,
+                project
+        );
+
+        return mongoTemplate.aggregate(aggregation, "reservation", EvseIdOnly.class)
+                .getMappedResults();
+    }
+
+
 
     //== 메서드 ==//
     private static AggregationOperation getAggregationDateFormatingOperation() {

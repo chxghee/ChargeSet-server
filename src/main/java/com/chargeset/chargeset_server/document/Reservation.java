@@ -21,6 +21,7 @@ public class Reservation {
     private Instant startTime;
     private Instant endTime;
     private int targetEnergyWh;
+    private int cost;
 
     private ReservationStatus reservationStatus;        // ACTIVE, WAITING, ONGOING, EXPIRED, COMPLETED, CANCELED
     private Instant createdAt;

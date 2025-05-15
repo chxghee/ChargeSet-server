@@ -1,8 +1,12 @@
 package com.chargeset.chargeset_server.controller;
 
+import com.chargeset.chargeset_server.document.Reservation;
 import com.chargeset.chargeset_server.document.status.ReservationStatus;
+import com.chargeset.chargeset_server.dto.reservation.NewReservation;
+import com.chargeset.chargeset_server.dto.reservation.NewReservationRequest;
 import com.chargeset.chargeset_server.dto.reservation.NoShowCountResponse;
 import com.chargeset.chargeset_server.dto.reservation.ReservationInfoResponse;
+import com.chargeset.chargeset_server.service.ChargingCostService;
 import com.chargeset.chargeset_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 public class ReservationApiController {
 
     private final ReservationService reservationService;
+    private final ChargingCostService chargingCostService;
 
     /**
      * 1. 금일 예약 조회 - 대시보드
@@ -59,6 +61,12 @@ public class ReservationApiController {
     @GetMapping("/no-show")
     public ResponseEntity<NoShowCountResponse> noShow() {
         return ResponseEntity.ok(reservationService.getNoShowCount());
+    }
+
+    @PostMapping("{stationId}/recommend/users/{idToken}")
+    public ResponseEntity<NewReservation> recommend(@PathVariable(name = "stationId") String stationId, @PathVariable(name = "idToken") String idToken,
+                                                    @RequestBody NewReservationRequest request) {
+        return ResponseEntity.ok(chargingCostService.calcFee(request, idToken, stationId));
     }
 
 }

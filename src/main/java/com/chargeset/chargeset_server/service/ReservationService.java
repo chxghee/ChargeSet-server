@@ -53,6 +53,10 @@ public class ReservationService {
         LocalDate currentTo = today;
         List<ReservationNoShowCount> currentStats = reservationRepository.getNoShowCounts(currentFrom, currentTo);
 
+        for (ReservationNoShowCount currentStat : currentStats) {
+            System.out.println("노쇼 " + currentStat.getCompleteCount() + " " + currentStat.getStationId() + " " + currentStat.getExpiredCount());
+        }
+
         // 누적값 계산
         long totalNoShowCount = currentStats.stream().mapToLong(ReservationNoShowCount::getExpiredCount).sum();
         long totalCompleteCount = currentStats.stream().mapToLong(ReservationNoShowCount::getCompleteCount).sum();
@@ -60,10 +64,13 @@ public class ReservationService {
         long currentTotal = totalNoShowCount + totalCompleteCount;
         double totalNoShowRate = currentTotal == 0 ? 0.0 : (double) totalNoShowCount / currentTotal;
 
+
+
         // 지난달 범위
         LocalDate previousFrom = today.minusDays(59);
         LocalDate previousTo = today.minusDays(30);
         List<ReservationNoShowCount> previousStats = reservationRepository.getNoShowCounts(previousFrom, previousTo);
+
 
         long previousNoShowCount = previousStats.stream().mapToLong(ReservationNoShowCount::getExpiredCount).sum();
         long previousCompleteCount = previousStats.stream().mapToLong(ReservationNoShowCount::getCompleteCount).sum();
