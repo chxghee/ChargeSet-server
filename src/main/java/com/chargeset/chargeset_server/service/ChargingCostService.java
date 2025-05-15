@@ -34,7 +34,7 @@ public class ChargingCostService {
 
         // 입력받은 시작 시간으로 endTime 계산
         LocalDateTime startTime = request.getStartDate().atTime(request.getStartTime());
-        LocalDateTime endTime = startTime.plusMinutes(request.getChargingTime());
+        LocalDateTime endTime = startTime.plusMinutes(request.getChargingMinute());
 
         // 2. 해당 시기에 예약 가능한지 -> 해당 시간동안 예약 테이블 확인하여 예약 가능한 evse 찾기
         List<EvseIdOnly> availableEvseIds = findAvailableEvseIds(stationId, startTime, endTime);
