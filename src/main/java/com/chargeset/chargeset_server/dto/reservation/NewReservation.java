@@ -11,7 +11,7 @@ public class NewReservation {
 
     private String stationId;
     private String evseId;
-    private int connectorId = 1;
+    private final int connectorId = 1;
 
     private String userId;
     private String idToken;

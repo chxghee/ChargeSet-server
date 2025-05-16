@@ -16,4 +16,13 @@ public class ApiExceptionHandler {
         log.error("[exceptionHandle] 400 에러", e);
         return new ErrorResult("BAD REQUEST", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public ErrorResult runtimeException(RuntimeException e) {
+        log.error("[exceptionHandle] 500 에러", e);
+        return new ErrorResult("알 수 없는 오류", e.getMessage());
+    }
+
+
 }

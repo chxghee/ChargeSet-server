@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationCustomRepository {
 
@@ -23,4 +24,6 @@ public interface ReservationCustomRepository {
     List<ReservationNoShowCount> getNoShowCounts(LocalDate from, LocalDate to);
 
     List<EvseIdOnly> findOccupiedEvseIdsReservedAt(String stationId, LocalDateTime from, LocalDateTime to);
+
+    Optional<ReservationInfoResponse> findCloseReservationByUserId(String userId);
 }

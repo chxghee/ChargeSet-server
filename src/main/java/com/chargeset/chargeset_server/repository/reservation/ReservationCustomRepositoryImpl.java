@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -216,6 +217,37 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
     }
 
 
+    @Override
+    public Optional<ReservationInfoResponse> findCloseReservationByUserId(String userId) {
+
+        Instant now = Instant.now();
+
+        Criteria criteria = Criteria.where("userId").is(userId)
+                .and("startTime").gte(now)
+                .and("reservationStatus").in(ReservationStatus.WAITING, ReservationStatus.ACTIVE);
+
+        MatchOperation match = Aggregation.match(criteria);
+
+        AggregationOperation projectToLocalDate = getAggregationDateFormatingOperation();
+
+        SortOperation sort = Aggregation.sort(Sort.by(
+                Sort.Order.asc("startTime"),
+                Sort.Order.asc("_id")
+        ));
+
+        LimitOperation limit = Aggregation.limit(1); // 첫 번째 문서만 가져오기
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                match,
+                projectToLocalDate,
+                sort,
+                limit
+        );
+
+        List<ReservationInfoResponse> reservation = mongoTemplate.aggregate(aggregation, "reservation", ReservationInfoResponse.class).getMappedResults();
+
+        return reservation.stream().findFirst();
+    }
 
     //== 메서드 ==//
     private static AggregationOperation getAggregationDateFormatingOperation() {

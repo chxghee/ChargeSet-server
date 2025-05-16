@@ -1,10 +1,7 @@
-package com.chargeset.chargeset_server.controller;
+package com.chargeset.chargeset_server.controller.api;
 
 import com.chargeset.chargeset_server.dto.tansaction.TotalStatResponse;
 import com.chargeset.chargeset_server.service.ReportService;
-import com.chargeset.chargeset_server.service.ReservationService;
-import com.chargeset.chargeset_server.service.TransactionService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;

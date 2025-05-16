@@ -1,4 +1,4 @@
-package com.chargeset.chargeset_server.controller;
+package com.chargeset.chargeset_server.controller.api;
 
 import com.chargeset.chargeset_server.dto.charging_station.EvseStatusSummary;
 import com.chargeset.chargeset_server.service.EvseService;
