@@ -44,6 +44,10 @@ public class TimeUtils {
         return date.atStartOfDay(KST).toInstant();
     }
 
+    public static Instant convertDateTimeToUTC(LocalDateTime dateTime) {
+        return dateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant();
+    }
+
     public static LocalDateTime convertInstantToKST(Instant instant) {
         return LocalDateTime.ofInstant(instant, KST);
     }

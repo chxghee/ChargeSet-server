@@ -1,6 +1,5 @@
-package com.chargeset.chargeset_server.controller;
+package com.chargeset.chargeset_server.controller.api;
 
-import com.chargeset.chargeset_server.document.Reservation;
 import com.chargeset.chargeset_server.document.status.ReservationStatus;
 import com.chargeset.chargeset_server.dto.reservation.NewReservation;
 import com.chargeset.chargeset_server.dto.reservation.NewReservationRequest;
@@ -67,6 +66,15 @@ public class ReservationApiController {
     public ResponseEntity<NewReservation> recommend(@PathVariable(name = "stationId") String stationId, @PathVariable(name = "idToken") String idToken,
                                                     @RequestBody NewReservationRequest request) {
         return ResponseEntity.ok(chargingCostService.calcFee(request, idToken, stationId));
+    }
+
+    /**
+     * 4. 예약 취소
+     */
+    @PostMapping("/{reservationId}/cancel")
+    public ResponseEntity<Void> cancel(@PathVariable(name = "reservationId") String reservationId) {
+        reservationService.cancelReservation(reservationId);
+        return ResponseEntity.noContent().build();
     }
 
 }

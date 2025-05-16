@@ -1,0 +1,184 @@
+<!-- templates/mobile/reserve.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/mobile-layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+    <title>충전 예약</title>
+
+    <th:block id="page-css">
+        <link rel="stylesheet" th:href="@{/css/reserve.css}">
+
+        <style>
+            /* ✅ 전체 배경 */
+            body {
+                background-color: #f4f6f9;
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            }
+
+            .app-header {
+                background-color: #ffffff;
+                padding: 16px 20px;
+                font-size: 20px;
+                font-weight: 700;
+                color: #333;
+                border-bottom: 1px solid #e0e0e0;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+                margin-bottom: 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .card-box {
+                background: #ffffff;
+                border-radius: 12px;
+                padding: 16px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+                margin-bottom: 20px;
+            }
+
+            .card-title {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            label {
+                font-weight: 500;
+                display: block;
+                margin-bottom: 6px;
+            }
+
+            select, input {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
+
+            .btn-primary {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 8px;
+                width: 100%;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+            .bottom-sheet {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: -100%;
+                background: #fff;
+                border-radius: 16px 16px 0 0;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+                transition: bottom 0.3s ease-in-out;
+                z-index: 1000;
+                padding: 16px;
+                max-height: 60%;
+                overflow-y: auto;
+            }
+
+            .bottom-sheet.show {
+                bottom: 0;
+            }
+
+            .sheet-header {
+                display: flex;
+                justify-content: space-between;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .sheet-header button {
+                background: none;
+                border: none;
+                font-size: 22px;
+            }
+
+            .sheet-body div {
+                margin-bottom: 8px;
+                font-size: 16px;
+            }
+        </style>
+
+    </th:block>
+</head>
+
+<body>
+<th:block id="page-content">
+    <div class="app-header">충전 예약</div>
+    <div class="container">
+        <!-- 예정된 예약 표시 영역 -->
+        <div class="card-box">
+            <div class="card-title">나의 예정된 예약</div>
+            <div id="my-reservation-content">예정된 예약이 없습니다.</div>
+        </div>
+
+
+
+
+        <!-- 가능한 예약 조회 폼 -->
+        <div class="card-box">
+            <div class="card-title">가능한 예약 조회</div>
+            <form id="reserve-form">
+
+
+                <div class="form-group">
+                    <label>시작 시간</label>
+                    <div class="row gx-2">
+                        <div class="col-6">
+                            <input type="date" id="startDate" name="startDate" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="time" id="startTime" name="startTime" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="chargingMinute">충전 시간(분)</label>
+                    <input type="number" id="chargingMinute" name="targetEnergy"  placeholder="예: 180" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetEnergy">목표 충전량 (Wh)</label>
+                    <input type="number" id="targetEnergy" name="targetEnergy" step="0.1" placeholder="예: 13000" required>
+                </div>
+
+                <button type="submit" class="btn-primary">예약 가능 여부 조회</button>
+            </form>
+        </div>
+
+
+
+        <!-- 예약 결과 바텀 시트 -->
+        <div id="available-reservation-modal" class="bottom-sheet">
+            <div class="sheet-header">
+                <span>예약 조회 결과</span>
+                <button onclick="closeReservationModal()">×</button>
+            </div>
+            <div class="sheet-body" id="reservation-result-content">
+                <!-- JS에서 결과 삽입 -->
+            </div>
+        </div>
+
+    </div>
+</th:block>
+
+<th:block id="page-script">
+    <script th:src="@{/js/mobile-reserve.js}" defer></script>
+</th:block>
+</body>
+</html>

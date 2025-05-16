@@ -1,4 +1,4 @@
-package com.chargeset.chargeset_server.controller;
+package com.chargeset.chargeset_server.controller.api;
 
 import com.chargeset.chargeset_server.document.status.TransactionStatus;
 import com.chargeset.chargeset_server.dto.tansaction.*;

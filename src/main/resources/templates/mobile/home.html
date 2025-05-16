@@ -1,0 +1,44 @@
+<!-- templates/mobile/reserve.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/mobile-layout :: layout(~{::title}, ~{::#page-css}, ~{::#page-content}, ~{::#page-script})}">
+<head>
+    <title>충전 예약</title>
+
+    <th:block id="page-css">
+        <link rel="stylesheet" th:href="@{/css/mobile-map.css}">
+    </th:block>
+</head>
+
+<body>
+<th:block id="page-content" th:fragment="content">
+    <div id="page-content">
+        <div class="app-header">충전소 찾기</div>
+        <div id="map"></div>
+    </div>
+
+    <div id="station-detail-modal" class="bottom-sheet">
+        <div class="sheet-header">
+            <span id="station-name"></span>
+            <button onclick="closeModal()">×</button>
+        </div>
+        <div class="sheet-body">
+            <div><strong>주소:</strong> <span id="station-address"></span></div>
+            <div><strong>사용 가능:</strong> <span id="station-available"></span>대</div>
+            <div><strong>충전 중:</strong> <span id="station-charging"></span>대</div>
+            <div><strong>예약됨:</strong> <span id="station-reserved"></span>대</div>
+            <div><strong>고장:</strong> <span id="station-faulted"></span>대</div>
+        </div>
+    </div>
+
+
+</th:block>
+
+<th:block id="page-script">
+    <script th:inline="javascript">
+        window.chargingStations = [[${chargingStations}]];
+    </script>
+    <script th:src="@{/js/mobile-map.js}" defer></script>
+</th:block>
+</body>
+</html>

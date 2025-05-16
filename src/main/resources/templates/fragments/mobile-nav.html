@@ -1,0 +1,67 @@
+<div th:fragment="mobile-nav">
+  <nav class="mobile-nav">
+    <a href="/mobile/home" class="nav-item" th:classappend="${activePage == 'home'} ? ' active'">
+      <i class="bi bi-house-door-fill"></i>
+      <span>홈</span>
+    </a>
+    <a href="/mobile/reserve" class="nav-item" th:classappend="${activePage == 'reserve'} ? ' active'">
+      <i class="bi bi-calendar-plus"></i>
+      <span>예약</span>
+    </a>
+    <a href="/mobile/history" class="nav-item" th:classappend="${activePage == 'history'} ? ' active'">
+      <i class="bi bi-clock-history"></i>
+      <span>이력</span>
+    </a>
+    <a href="/mobile/mypage" class="nav-item" th:classappend="${activePage == 'mypage'} ? ' active'">
+      <i class="bi bi-person-circle"></i>
+      <span>마이</span>
+    </a>
+  </nav>
+
+  <style>
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #1f2d3d;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      z-index: 999;
+    }
+
+    .mobile-nav .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #999;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px; /* ✅ 아이콘과 텍스트 사이 간격 조절 */
+      font-size: 12px;
+    }
+
+    .mobile-nav .nav-item i {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .mobile-nav .nav-item span {
+      line-height: 1;
+      font-size: 11px;
+    }
+
+    .mobile-nav .nav-item.active {
+      color: #00e676;
+      font-weight: bold;
+    }
+
+    .mobile-nav .nav-item.active i {
+      color: #00e676;
+    }
+  </style>
+</div>
