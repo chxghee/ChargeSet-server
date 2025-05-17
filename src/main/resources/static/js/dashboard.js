@@ -10,7 +10,7 @@ async function fetchWeeklyStats() {
         new Date(d.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
     );
     const revenue = data.map(d => d.totalRevenue);
-    const energy = data.map(d => d.totalEnergy);
+    const energy = data.map(d => (d.totalEnergy / 1000).toFixed(1));
     const count = data.map(d => d.count);
 
     const commonOptions = {
@@ -42,7 +42,7 @@ async function fetchWeeklyStats() {
         data: {
             labels: labels,
             datasets: [{
-                label: '전력량 (Wh)',
+                label: '전력량 (kWh)',
                 data: energy,
                 borderColor: '#4dabf7',
                 backgroundColor: 'transparent',
@@ -190,7 +190,7 @@ function renderReservations(reservations) {
             <td>${item.evseId || '-'}</td>
             <td>${item.startTime || '-'}</td>
             <td>${item.endTime || '-'}</td>
-            <td>${item.targetEnergyWh?.toLocaleString() || 0}</td>
+            <td>${(item.targetEnergyWh / 1000).toFixed(1) || 0}</td>
             <td>${formatReservationStatus(item.reservationStatus)}</td>
         `;
         tbody.appendChild(row);
@@ -209,8 +209,25 @@ function formatReservationStatus(status) {
     }
 }
 
+// 주간 통계 API 데이터로 차트 생성
+async function fetchStationTodayRevenue() {
+
+    try {
+        const response = await fetch(`/api/transactions/today-revenue`);
+        const data = await response.json();
+
+        document.getElementById("today-user-count").textContent = `${data.count}명`;
+        const energy = data.totalEnergy;
+        document.getElementById("today-energy").textContent = energy === 0 ? "0 kWh" : `${(energy / 1000).toFixed(1)} kWh`;
+        document.getElementById("today-revenue").textContent = `${data.totalRevenue.toLocaleString()}원`;
+    } catch (error) {
+        console.error("금일 수익 데이터 로딩 실패:", error);
+    }
+}
+
 // 초기화
 window.addEventListener('DOMContentLoaded', () => {
+    fetchStationTodayRevenue();
     fetchWeeklyStats();
     fetchEvseStatus();
     loadMapWithStations();

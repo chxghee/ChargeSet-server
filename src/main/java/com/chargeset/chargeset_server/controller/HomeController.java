@@ -24,11 +24,9 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         List<ChargingStationInfo> chargingStationsLocation = chargingStationService.getChargingStationsInfo();
-        ChargingDailyStat todayChargingStats = transactionService.getTodayChargingStats();
 
         model.addAttribute("stationCount", chargingStationsLocation.size());
         model.addAttribute("chargingStations", chargingStationsLocation);
-        model.addAttribute("todayChargingStats", todayChargingStats);
         model.addAttribute("activePage", "dashboard");
         return "dashboard";
     }

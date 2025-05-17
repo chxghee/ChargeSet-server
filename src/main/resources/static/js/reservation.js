@@ -52,7 +52,7 @@ function renderReservationData(reservation) {
             <td>${item.userId || '-'}</td>
             <td>${item.startTime || '-'}</td>
             <td>${item.endTime || '-'}</td>
-            <td>${item.targetEnergyWh?.toLocaleString() || 0}</td>
+            <td>${(item.targetEnergyWh / 1000).toFixed(1) || 0}</td>
             <td>${item.createdAt || '-'}</td>
             <td>${formatReservationStatus(item.reservationStatus)}</td>
         `;

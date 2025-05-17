@@ -55,7 +55,7 @@ function renderTransactionData(transactions) {
             <td>${item.userId || '-'}</td>
             <td>${item.startTime || '-'}</td>
             <td>${item.endTime || '-'}</td>
-            <td>${item.energyWh?.toLocaleString() || 0}</td>
+            <td>${(item.energyWh / 1000).toFixed(1) || 0}</td>
             <td>${item.cost?.toLocaleString() || 0}</td>
             <td>${formatTransactionStatus(item.transactionStatus)}</td>
         `;
@@ -108,7 +108,7 @@ async function openProfileModal(transactionId) {
                 data: {
                     labels,
                     datasets: [{
-                        label: '전력 제한 (Wh)',
+                        label: '전력 제한 (W)',
                         data: values,
                         stepped: true,
                         fill: false,
@@ -274,17 +274,30 @@ async function fetchMonthlyChartData() {
     // 요약 정보 세팅
     document.getElementById("summary-first-title").textContent = firstStationId;
     document.getElementById("summary-first-revenue").textContent = firstData.totalRevenue.toLocaleString();
-    document.getElementById("summary-first-energy").textContent = firstData.totalEnergy.toLocaleString();
+    const energy1 = firstData.totalEnergy;
+    document.getElementById("summary-first-energy").textContent = energy1 === 0 ? "0" : `${(energy1 / 1000).toFixed(1)}`;
     document.getElementById("summary-first-count").textContent = firstData.totalCount.toLocaleString();
 
     document.getElementById("summary-second-title").textContent = secondStationId;
     document.getElementById("summary-second-revenue").textContent = secondData.totalRevenue.toLocaleString();
-    document.getElementById("summary-second-energy").textContent = secondData.totalEnergy.toLocaleString();
+    const energy2 = firstData.totalEnergy;
+    document.getElementById("summary-second-energy").textContent = energy2 === 0 ? "0" : `${(energy2 / 1000).toFixed(1)}`;
     document.getElementById("summary-second-count").textContent = secondData.totalCount.toLocaleString();
 
     const labels = firstData.dailyStats.map(d => d.date);
-    const firstValues = firstData.dailyStats.map(d => d[metric]);
-    const secondValues = secondData.dailyStats.map(d => d[metric]);
+    const firstValues = firstData.dailyStats.map(d => {
+        if (metric === "totalEnergy") {
+            return +(d[metric] / 1000).toFixed(1);
+        }
+        return d[metric];
+    });
+    const secondValues = secondData.dailyStats.map(d => {
+        if (metric === "totalEnergy") {
+            return +(d[metric] / 1000).toFixed(1);
+        }
+        return d[metric];
+    });
+
 
     const ctx = document.getElementById("monthlyChartCanvas").getContext("2d");
     if (monthlyChart) monthlyChart.destroy();
@@ -339,7 +352,7 @@ async function fetchMonthlyChartData() {
                     title: {
                         display: true,
                         text: metric === 'totalRevenue' ? '원' :
-                            metric === 'totalEnergy' ? 'Wh' : '횟수'
+                            metric === 'totalEnergy' ? 'kWh' : '횟수'
                     }
                 }
             }

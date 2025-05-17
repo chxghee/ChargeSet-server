@@ -27,6 +27,7 @@ public class TransactionApiController {
      */
     @GetMapping("/today-revenue")
     public ResponseEntity<ChargingDailyStat> getTodayRevenueStat() {
+        System.out.println("!@#!@!@#");
         return ResponseEntity.ok(transactionService.getTodayChargingStats());
     }
 
