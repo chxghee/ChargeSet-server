@@ -12,6 +12,7 @@
 
     <th:block th:replace="${css}"></th:block>
 </head>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9f617a077cfd2bb32f00a28ce18d3226&libraries=services,geometry"></script>
 <body style="padding-bottom: 60px;">
 
 <!-- 페이지 내용 -->
@@ -20,7 +21,7 @@
 <!-- ✅ 하단 네비게이션 바 include -->
 <div th:replace="~{fragments/mobile-nav :: mobile-nav}"></div>
 
-<script type="text/javascript" th:src="@{https://dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoApiKey})}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <th:block th:replace="${script}"></th:block>
 </body>

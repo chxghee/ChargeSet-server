@@ -73,9 +73,9 @@ async function fetchEvseStatus() {
     const res = await fetch("/api/evses/status-summary");
     const data = await res.json();
 
-    const labels = ['사용 가능', '충전 중', '예약됨', '고장'];
-    const values = [data.available, data.charging, data.reserved, data.faulted];
-    const colors = ['#4caf50', '#2196f3', '#ff9800', '#f44336'];
+    const labels = ['사용 가능', '충전 중', '예약됨', '고장', '오프라인'];
+    const values = [data.available, data.charging, data.reserved, data.faulted, data.offline];
+    const colors = ['#2196f3', '#4caf50', '#ff9800', '#f44336', '#9E9E9E'];
 
     new Chart(document.getElementById('evseStatusChart'), {
         type: 'doughnut',
@@ -145,6 +145,7 @@ function loadMapWithStations() {
                                 <div>충전 중: ${status.charging}대</div>
                                 <div>예약됨: ${status.reserved}대</div>
                                 <div>고장: ${status.faulted}대</div>
+                                <div>오프라인: ${status.offline}대</div>
                             </div>
                         </div>`;
 

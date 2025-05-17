@@ -23,11 +23,10 @@
             <button onclick="closeModal()">×</button>
         </div>
         <div class="sheet-body">
-            <div><strong>주소:</strong> <span id="station-address"></span></div>
-            <div><strong>사용 가능:</strong> <span id="station-available"></span>대</div>
+            <div><strong>📍 주소:</strong> <span id="station-address"></span></div>
+            <div><strong>🚗 거리:</strong> <span id="station-distance"></span></div>
+            <div><strong>사용 가능한 차량:</strong> <span id="station-available"></span>대</div>
             <div><strong>충전 중:</strong> <span id="station-charging"></span>대</div>
-            <div><strong>예약됨:</strong> <span id="station-reserved"></span>대</div>
-            <div><strong>고장:</strong> <span id="station-faulted"></span>대</div>
         </div>
     </div>
 
@@ -38,7 +37,9 @@
     <script th:inline="javascript">
         window.chargingStations = [[${chargingStations}]];
     </script>
-    <script th:src="@{/js/mobile-map.js}" defer></script>
+
+
+    <script th:src="@{/js/mobile-map.js}"></script>
 </th:block>
 </body>
 </html>

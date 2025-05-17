@@ -14,6 +14,7 @@ public class EvseStatusSummary {
     private int charging;
     private int faulted;
     private int reserved;
+    private int offline;
     
     public EvseStatusSummary(List<EvseStatusCount> evseStatusCounts) {
 
@@ -35,5 +36,6 @@ public class EvseStatusSummary {
         this.charging = countMap.get(EvseStatus.CHARGING);
         this.faulted = countMap.get(EvseStatus.FAULTED);
         this.reserved = countMap.get(EvseStatus.RESERVED);
+        this.offline = countMap.get(EvseStatus.OFFLINE);
     }
 }
