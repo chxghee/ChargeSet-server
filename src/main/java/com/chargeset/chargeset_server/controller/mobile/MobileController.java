@@ -22,10 +22,7 @@ public class MobileController {
 
     @GetMapping("/home")
     public String home(Model model) {
-
-        List<ChargingStationInfo> chargingStationsLocation = chargingStationService.getChargingStationsInfo();
-        model.addAttribute("chargingStations", chargingStationsLocation);
-
+        model.addAttribute("chargingStations", chargingStationService.getChargingStationsInfo());
 
         model.addAttribute("activePage", "home");
         return "mobile/home";
@@ -33,6 +30,7 @@ public class MobileController {
 
     @GetMapping("/reserve")
     public String mobileReserves(Model model) {
+        model.addAttribute("chargingStations", chargingStationService.getChargingStationsInfo());
         model.addAttribute("activePage", "reserve");
         return "mobile/reserve";
     }

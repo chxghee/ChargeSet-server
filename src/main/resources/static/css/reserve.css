@@ -1,21 +1,46 @@
+/*  전체 배경 및 기본 설정 */
+body {
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
 
+/* 상단 헤더 */
 .app-header {
     background-color: #ffffff;
-    padding: 16px;
-    font-size: 18px;
-    font-weight: 600;
+    padding: 16px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 100;
-    text-align: center;
 }
 
-.form-container {
+/* 콘텐츠 박스 */
+.container {
     padding: 20px;
-    padding-bottom: 90px; /* 네비게이션 + 버튼 여백 확보 */
 }
 
+.card-box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* 입력 폼 */
 .form-group {
     margin-bottom: 20px;
 }
@@ -35,12 +60,25 @@ input, select {
     background-color: #fff;
 }
 
+/* 기본 버튼 */
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* 고정 하단 버튼 */
 .fixed-bottom-button {
     position: fixed;
     bottom: 60px; /* 하단 네비게이션 바 높이 고려 */
     left: 0;
     width: 100%;
-    background-color: #4caf50;
+    background-color: #4CAF50;
     color: #fff;
     font-size: 18px;
     text-align: center;
@@ -53,4 +91,74 @@ input, select {
 
 .fixed-bottom-button:hover {
     background-color: #43a047;
+}
+
+/* 바텀 시트 모달 */
+.bottom-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: -100%;
+    background: #1f2d3d;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    transition: bottom 0.3s ease-in-out;
+    z-index: 1000;
+    padding: 20px;
+    max-height: 65%;
+    overflow-y: auto;
+    color: #ffffff;
+}
+
+.bottom-sheet.show {
+    bottom: 0;
+}
+
+.sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #00e676;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 6px;
+}
+
+.sheet-header button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #00e676;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.sheet-body > div {
+    font-size: 15px;
+    margin-bottom: 14px;
+    color: #ffffff;
+}
+
+.sheet-body strong {
+    color: #00e676;
+    font-weight: 600;
+}
+
+/* 예약 카드 */
+.sheet-body .mb-3 {
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 예약 버튼 */
+.sheet-body .btn-success {
+    background-color: #00e676;
+    border: none;
+    color: #1f2d3d;
+    font-weight: bold;
 }

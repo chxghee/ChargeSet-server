@@ -25,29 +25,30 @@
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
-                    <div class="section-title">운영중인 충전소</div>
-                    <div class="highlight" th:text="${stationCount}">0개</div>
+                    <div class="section-title">ESS 충전량</div>
+                    <div class="highlight" th:text="${stationCount}">1200 kWh</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">금일 사용자</div>
-                    <div class="highlight" th:text="${todayChargingStats.count + '명'}">00명</div>
+                    <div class="highlight" id="today-user-count"></div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">사용 전력량</div>
-                    <div class="highlight" th:text="${todayChargingStats.totalEnergy + ' kWh'}">00 kWh</div>
+                    <div class="highlight" id="today-energy">-</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12 mb-4">
                 <div class="card-box text-center">
                     <div class="section-title">금일 매출</div>
-                    <div class="highlight text-primary" th:text="${todayChargingStats.totalRevenue + '원'}">00원</div>
+                    <div class="highlight text-success" id="today-revenue">-</div>
                 </div>
             </div>
         </div>
+
 
         <!-- 지도 + EVSE 현황 -->
         <div class="row mb-4">
@@ -103,7 +104,7 @@
                         <th>EVSE ID</th>
                         <th>시작 시간</th>
                         <th>종료 시간</th>
-                        <th>목표 충전량(Wh)</th>
+                        <th>목표 충전량(kWh)</th>
                         <th>예약 상태</th>
                     </tr>
                     </thead>

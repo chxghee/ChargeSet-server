@@ -9,7 +9,8 @@ async function fetchStationTodayRevenue() {
         const data = await response.json();
 
         document.getElementById("today-user-count").textContent = `${data.count}명`;
-        document.getElementById("today-energy").textContent = `${data.totalEnergy.toLocaleString()} kWh`;
+        const energy = data.totalEnergy;
+        document.getElementById("today-energy").textContent = energy === 0 ? "0 kWh" : `${(energy / 1000).toFixed(1)} kWh`;
         document.getElementById("today-revenue").textContent = `${data.totalRevenue.toLocaleString()}원`;
     } catch (error) {
         console.error("금일 수익 데이터 로딩 실패:", error);
@@ -28,13 +29,19 @@ async function fetchHourlyChartData() {
     const json = await res.json();
 
     const labels = json.data.map(d => `${d.hour}시`);
-    const values = json.data.map(d => d[metric]);
+    const values = json.data.map(d => {
+        if (metric === "totalEnergy") {
+            return +(d[metric] / 1000).toFixed(1);
+        }
+        return d[metric];
+    });
+
 
     if (hourlyChart) hourlyChart.destroy();
 
     const labelMap = {
         count: "횟수",
-        totalEnergy: "전력량 (Wh)",
+        totalEnergy: "전력량 (kWh)",
         totalRevenue: "매출 (원)"
     };
 
