@@ -1,11 +1,10 @@
 // dashboard.js
 
-let revenueChart, energyChart, countChart;
-
+// 주간 통계 API 데이터로 차트 생성
 async function fetchWeeklyStats() {
     const res = await fetch('/api/transactions/weekly-revenue');
     const result = await res.json();
-    const data = result.dailyStats;
+    const data = result.dailyStats; // 일별 데이터만 추출
 
     const labels = data.map(d =>
         new Date(d.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
@@ -14,80 +13,62 @@ async function fetchWeeklyStats() {
     const energy = data.map(d => (d.totalEnergy / 1000).toFixed(1));
     const count = data.map(d => d.count);
 
-    if (!revenueChart) {
-        const commonOptions = {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true },
-                x: { grid: { display: false } }
-            }
-        };
+    const commonOptions = {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true },
+            x: { grid: { display: false } }
+        }
+    };
 
-        revenueChart = new Chart(document.getElementById('revenueChart'), {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    label: '일일 수익 (원)',
-                    data: revenue,
-                    borderColor: '#fbbf24',
-                    backgroundColor: 'transparent',
-                    tension: 0.4
-                }]
-            },
-            options: commonOptions
-        });
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '일일 수익 (원)',
+                data: revenue,
+                borderColor: '#fbbf24',
+                backgroundColor: 'transparent',
+                tension: 0.4
+            }]
+        },
+        options: commonOptions
+    });
 
-        energyChart = new Chart(document.getElementById('energyChart'), {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    label: '전력량 (kWh)',
-                    data: energy,
-                    borderColor: '#4dabf7',
-                    backgroundColor: 'transparent',
-                    tension: 0.4
-                }]
-            },
-            options: commonOptions
-        });
+    new Chart(document.getElementById('energyChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '전력량 (kWh)',
+                data: energy,
+                borderColor: '#4dabf7',
+                backgroundColor: 'transparent',
+                tension: 0.4
+            }]
+        },
+        options: commonOptions
+    });
 
-        countChart = new Chart(document.getElementById('countChart'), {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    label: '충전 횟수',
-                    data: count,
-                    borderColor: '#81c784',
-                    backgroundColor: 'transparent',
-                    tension: 0.4
-                }]
-            },
-            options: commonOptions
-        });
-    } else {
-        // 기존 차트에 데이터만 갱신
-        revenueChart.data.labels = labels;
-        revenueChart.data.datasets[0].data = revenue;
-        revenueChart.update();
-
-        energyChart.data.labels = labels;
-        energyChart.data.datasets[0].data = energy;
-        energyChart.update();
-
-        countChart.data.labels = labels;
-        countChart.data.datasets[0].data = count;
-        countChart.update();
-    }
+    new Chart(document.getElementById('countChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '충전 횟수',
+                data: count,
+                borderColor: '#81c784',
+                backgroundColor: 'transparent',
+                tension: 0.4
+            }]
+        },
+        options: commonOptions
+    });
 }
 
-
-
-let evseStatusChartInstance = null;
-
+// EVSE 상태 차트
 async function fetchEvseStatus() {
     const res = await fetch("/api/evses/status-summary");
     const data = await res.json();
@@ -96,39 +77,28 @@ async function fetchEvseStatus() {
     const values = [data.available, data.charging, data.reserved, data.faulted, data.offline];
     const colors = ['#2196f3', '#4caf50', '#ff9800', '#f44336', '#9E9E9E'];
 
-    if (!evseStatusChartInstance) {
-        // 최초 1회 차트 생성
-        const ctx = document.getElementById('evseStatusChart').getContext('2d');
-        evseStatusChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return `${context.label}: ${context.raw}대`;
-                            }
+    new Chart(document.getElementById('evseStatusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{ data: values, backgroundColor: colors, borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw}대`;
                         }
                     }
                 }
             }
-        });
-    } else {
-        // 이후는 데이터만 갱신
-        evseStatusChartInstance.data.datasets[0].data = values;
-        evseStatusChartInstance.update();
-    }
+        }
+    });
 }
+
 // 지도에 충전소 마커 및 오버레이 표시
 function loadMapWithStations() {
     const mapContainer = document.getElementById('map');
@@ -260,11 +230,7 @@ async function fetchStationTodayRevenue() {
 window.addEventListener('DOMContentLoaded', () => {
     fetchStationTodayRevenue();
     fetchWeeklyStats();
-    fetchEvseStatus();                         // 초기 1회 호출
-    setInterval(fetchEvseStatus, 1500);        // 1.5초마다 상태 갱신
-    setInterval(fetchStationTodayRevenue, 7000) // 6초마다 갱신
-//    setInterval(fetchWeeklyStats, 10000);
-
+    fetchEvseStatus();
     loadMapWithStations();
     fetchReservations(0);
 });

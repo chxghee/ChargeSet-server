@@ -36,6 +36,7 @@ public class ChargingCostService {
         User user = userRepository.findByIdToken(idToken)
                 .orElseThrow(() -> new IllegalArgumentException("인증된 사용자가 아닙니다!"));
 
+        System.out.println("유저:" + user.getId() + " " + user.getName());
         // 입력받은 시작 시간으로 endTime 계산
         LocalDateTime startTime = request.getStartDate().atTime(request.getStartTime());
         LocalDateTime endTime = startTime.plusMinutes(request.getChargingMinute());
@@ -47,17 +48,32 @@ public class ChargingCostService {
             throw new IllegalArgumentException("현재 예약 가능한 충전기가 없습니다!");
         }
 
+        int chargingTime = request.getChargingMinute();
+        int chargingWh = request.getTargetEnergyWh();
 
-        // 3. 요청 유효성 검사 - 가능한 요청인지? -> 만약 1시간 예약 했는데 10000kWh 충전 요청이 온다면? IllegalArgumentException("~~~오류 메세지") 로 예외를 던저 주세요 -> 일단 되면 좋고 안되면 어쩔수 없죠
 
 
-        // 4. 충전 프로파일 산출 -> 충전 프로파일은 NewChargingProfile 객체를 생성해야 함
+        ////계산 편의를 위해 완속은 시간당 30000(분당 500)Wh, 고속은 시간당 60000(분당 1000)Wh 충전으로 변경 (기존 계획: 고속 50000kWh)
+
+        if (chargingTime * 1000 < chargingWh) { // <-  d여기 1000은 어케 나온 숫자인지? chargingTime 분단위 인가요?
+            throw new IllegalArgumentException("요구 충전량을 충전하기 위한 시간이 충분하지 않습니다!");
+        }
+
+
+        NewReservation option;
+
+
+
+
         NewChargingProfile chargingProfile = getChargingProfile(startTime);
 
 
         // 5. 충전 비용 산출 -> TOU 와 ESS 뭐시기로 암튼 비용을 산정해주세요
         // -> 일단 아직 DB에 저장될 ESS 관련 데이터 스키마를 정하지 않아서 이거 만들떄 편한 형태로 정해주면 그대로 저장하도록 하겠음
         int cost = getCost();
+        if (stationId.equals("ST-002")) {
+            cost = 410;
+        }
 
 
         // 일단 이런식으로 이루어 질거 같은데 코드를 짜면서 로직 흐름은 수정해도 됨
@@ -81,9 +97,10 @@ public class ChargingCostService {
     // 이 부분 구현해 주세요
     private NewChargingProfile getChargingProfile(LocalDateTime startTime) {
         List<ChargingSchedulePeriod> periods = new ArrayList<>();
-        periods.add(new ChargingSchedulePeriod(0, 3000, false));
-        periods.add(new ChargingSchedulePeriod(1800, 2000, true));
-        periods.add(new ChargingSchedulePeriod(3600, 5000, true));
+        periods.add(new ChargingSchedulePeriod(0, 6000, false));
+        periods.add(new ChargingSchedulePeriod(60, 60000, true));
+        periods.add(new ChargingSchedulePeriod(120, 6000, true));
+        periods.add(new ChargingSchedulePeriod(180, 0, true));
 
         return new NewChargingProfile(TimeUtils.convertDateTimeToUTC(startTime), periods);
     }
@@ -91,7 +108,7 @@ public class ChargingCostService {
     // 이 부분 구현해 주세요
     private int getCost() {
         List<Tou> touData = touRepository.findAll();    // TOU 데이터를 가져올 수 있음
-        return 20000;
+        return 420;
     }
 
     private List<EvseIdOnly> findAvailableEvseIds(String stationId, LocalDateTime startTime, LocalDateTime endTime) {
