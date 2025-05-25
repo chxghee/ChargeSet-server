@@ -26,7 +26,7 @@ function handleReservationSubmit(e) {
     const targetEnergyWh = parseInt(document.getElementById('targetEnergy').value);
 
     // 일단 유저 토큰 하드코딩으로 넣어놓음 -> 추후 로그인이나 그런걸로 대체예정
-    const idToken = "token-1234";
+    const idToken = "token-6789";
 
     if (!startDate || !startTime || !chargingMinute || !targetEnergyWh) {
         alert("모든 항목을 입력해 주세요.");
@@ -73,12 +73,21 @@ function handleReservationSubmit(e) {
             const stationName = station.name || r.stationId;
             const energyKWh = (reservation.targetEnergyWh / 1000).toFixed(1);
 
+            var distance;
+            if (r.stationId == "ST-001") {
+                distance = 0.56;
+            } else {
+                distance = 8.24;
+            }
+
             let distanceText = "거리 계산 불가";
             if (currentPosition) {
-                const distance = computeDistanceKm(
+                distance = computeDistanceKm(
                     currentPosition.lat, currentPosition.lng,
                     station.lat, station.lng
                 );
+                distanceText = `${distance.toFixed(2)} km`;
+            } else {
                 distanceText = `${distance.toFixed(2)} km`;
             }
 
@@ -145,7 +154,7 @@ function confirmReservation(encodedJson) {
 
 
 function loadMyUpcomingReservation() {
-    const userId = "67dfc3a4dbbe444d632a241e"; // 실제 로그인된 사용자 ID 또는 토큰 기반 추출
+    const userId = "682d6f8a3792904b5c987afe"; // 실제 로그인된 사용자 ID 또는 토큰 기반 추출
 
     fetch(`/api/members/${userId}/reservations`)
         .then(res => {

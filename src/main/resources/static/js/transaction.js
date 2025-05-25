@@ -78,6 +78,7 @@ function formatTransactionStatus(status) {
         case 'ABORTED': return '서버 강제종료';
         case 'FAILED': return '충전 실패';
         case 'INTERRUPTED': return '충전 중 중단';
+        case 'CHARGING': return '충전 중';
         default: return status;
     }
 }

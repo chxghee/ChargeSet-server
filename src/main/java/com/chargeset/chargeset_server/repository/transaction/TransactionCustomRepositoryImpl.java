@@ -327,7 +327,7 @@ public class TransactionCustomRepositoryImpl implements TransactionCustomReposit
         Criteria criteria = Criteria.where("endTime")
                 .gte(Date.from(timeRangeInKST.getFirst()))
                 .lte(Date.from(timeRangeInKST.getSecond()))
-                .and("transactionStatus").is("COMPLETED");
+                .and("transactionStatus").in("COMPLETED", "CHARGING");
 
         return Aggregation.match(criteria);
     }
