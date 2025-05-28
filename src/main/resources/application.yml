@@ -7,6 +7,9 @@ spring:
     #uri: mongodb://localhost:27017/charge-set?maxPoolSize=100&minPoolSize=5&maxIdleTimeMS=60000&waitQueueTimeoutMS=10000   # 커넥션 풀 설정
     #uri: ${MONGO_URI}
 
+server:
+  port: 8080
+
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
@@ -14,6 +17,7 @@ logging:
     org.mongodb.driver.connection: INFO
     org.mongodb.driver.cluster: INFO
     org.mongodb.driver.operation: INFO
+
 
 
 kakao:
