@@ -58,9 +58,6 @@ public class ReservationService {
         LocalDate currentTo = today;
         List<ReservationNoShowCount> currentStats = reservationRepository.getNoShowCounts(currentFrom, currentTo);
 
-        for (ReservationNoShowCount currentStat : currentStats) {
-            System.out.println("노쇼 " + currentStat.getCompleteCount() + " " + currentStat.getStationId() + " " + currentStat.getExpiredCount());
-        }
 
         // 누적값 계산
         long totalNoShowCount = currentStats.stream().mapToLong(ReservationNoShowCount::getExpiredCount).sum();
