@@ -22,7 +22,7 @@ public class MemberApiController {
     public ResponseEntity<NewReservation> getReserveInfo(@PathVariable("idToken") String idToken,
                                                   @PathVariable("stationId") String stationId,
                                                   @RequestBody NewReservationRequest request) {
-        return ResponseEntity.ok(chargingCostService.calcFee(request, idToken, stationId));
+        return ResponseEntity.ok(chargingCostService.calculateFee(request, idToken, stationId));
     }
 
     @PostMapping("/reservations/confirm")

@@ -65,7 +65,7 @@ public class ReservationApiController {
     @PostMapping("{stationId}/recommend/users/{idToken}")
     public ResponseEntity<NewReservation> recommend(@PathVariable(name = "stationId") String stationId, @PathVariable(name = "idToken") String idToken,
                                                     @RequestBody NewReservationRequest request) {
-        return ResponseEntity.ok(chargingCostService.calcFee(request, idToken, stationId));
+        return ResponseEntity.ok(chargingCostService.calculateFee(request, idToken, stationId));
     }
 
     /**
